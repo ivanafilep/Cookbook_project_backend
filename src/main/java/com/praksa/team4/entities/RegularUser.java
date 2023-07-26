@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -23,10 +24,8 @@ public class RegularUser extends UserEntity {
 	@JoinColumn(name = "myCookBook")
 	private MyCookBook myCookBook;
 	
-	//TODO kako uraditi alergene ovde
-	
-//	@OneToMany(mappedBy = "regularUser", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-//	private List<String> myAllergens;
+	@OneToMany(mappedBy = "regularUser", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	private List<RegularUserAllergens> myAllergens;
 
 	public RegularUser() {
 		super();

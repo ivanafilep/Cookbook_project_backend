@@ -1,5 +1,6 @@
 package com.praksa.team4.entities;
 
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -34,15 +34,12 @@ public class Allergens {
 	@NotNull(message = "Icon must be included.")
 	public String icon;
 	
-	//TODO sta sa sastojcima i userom
-	
 	@OneToOne(mappedBy = "allergens", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	public Ingredients ingredients;
 
-//	@JsonIgnore
-//	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-//	@JoinColumn(name = "regularUser")
-//	private RegularUser regularUser;
+	@OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@JoinColumn(name = "regularUser")
+	private List<RegularUserAllergens> regularUser;
 	
 	public Allergens() {}
 
