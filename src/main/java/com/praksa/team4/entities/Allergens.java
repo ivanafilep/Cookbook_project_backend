@@ -34,8 +34,8 @@ public class Allergens {
 	@NotNull(message = "Icon must be included.")
 	public String icon;
 	
-	@OneToOne(mappedBy = "allergen", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	public Ingredients ingredient;
+	@OneToMany(mappedBy = "allergen", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	public List<Ingredients> ingredient;
 
 	@OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "regularUser")
@@ -43,10 +43,8 @@ public class Allergens {
 	
 	public Allergens() {}
 
-	
-
 	public Allergens(Integer id, @NotNull(message = "Name must be included.") String name,
-			@NotNull(message = "Icon must be included.") String icon, Ingredients ingredient,
+			@NotNull(message = "Icon must be included.") String icon, List<Ingredients> ingredient,
 			List<RegularUserAllergens> regularUser) {
 		super();
 		this.id = id;
@@ -55,8 +53,6 @@ public class Allergens {
 		this.ingredient = ingredient;
 		this.regularUser = regularUser;
 	}
-
-
 
 	public Integer getId() {
 		return id;
@@ -82,20 +78,20 @@ public class Allergens {
 		this.icon = icon;
 	}
 
-	public Ingredients getIngredient() {
+	public List<Ingredients> getIngredient() {
 		return ingredient;
 	}
 
-	public void setIngredient(Ingredients ingredient) {
+	public void setIngredient(List<Ingredients> ingredient) {
 		this.ingredient = ingredient;
 	}
 
-//	public RegularUser getRegularUser() {
-//		return regularUser;
-//	}
-//
-//	public void setRegularUser(RegularUser regularUser) {
-//		this.regularUser = regularUser;
-//	}
+	public List<RegularUserAllergens> getRegularUser() {
+		return regularUser;
+	}
 
+	public void setRegularUser(List<RegularUserAllergens> regularUser) {
+		this.regularUser = regularUser;
+	}
+	
 }

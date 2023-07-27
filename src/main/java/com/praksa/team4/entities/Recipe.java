@@ -55,6 +55,9 @@ public class Recipe {
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "myCookBook")
 	private MyCookBook myCookBook;
+	
+	@OneToMany(mappedBy = "recipe", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	public List<RecipeIngredient> recipeIngrediens;
 
 	public Recipe() {
 	}
@@ -63,7 +66,7 @@ public class Recipe {
 			@NotNull(message = "Steps must be included.") String steps,
 			@NotNull(message = "Time must be included.") Integer time,
 			@NotNull(message = "Amount must be included.") Integer amount, String picture, Chef chef,
-			List<Ingredients> ingredients, MyCookBook myCookBook) {
+			List<Ingredients> ingredients, MyCookBook myCookBook, List<RecipeIngredient> recipeIngrediens) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -74,6 +77,7 @@ public class Recipe {
 		this.chef = chef;
 		this.ingredients = ingredients;
 		this.myCookBook = myCookBook;
+		this.recipeIngrediens = recipeIngrediens;
 	}
 
 	public Integer getId() {
@@ -116,12 +120,12 @@ public class Recipe {
 		this.amount = amount;
 	}
 
-	public List<Ingredients> getIngredients() {
-		return ingredients;
+	public String getPicture() {
+		return picture;
 	}
 
-	public void setIngredients(List<Ingredients> ingredients) {
-		this.ingredients = ingredients;
+	public void setPicture(String picture) {
+		this.picture = picture;
 	}
 
 	public Chef getChef() {
@@ -132,6 +136,14 @@ public class Recipe {
 		this.chef = chef;
 	}
 
+	public List<Ingredients> getIngredients() {
+		return ingredients;
+	}
+
+	public void setIngredients(List<Ingredients> ingredients) {
+		this.ingredients = ingredients;
+	}
+
 	public MyCookBook getMyCookBook() {
 		return myCookBook;
 	}
@@ -140,12 +152,12 @@ public class Recipe {
 		this.myCookBook = myCookBook;
 	}
 
-	public String getPicture() {
-		return picture;
+	public List<RecipeIngredient> getRecipeIngrediens() {
+		return recipeIngrediens;
 	}
 
-	public void setPicture(String picture) {
-		this.picture = picture;
+	public void setRecipeIngrediens(List<RecipeIngredient> recipeIngrediens) {
+		this.recipeIngrediens = recipeIngrediens;
 	}
 
 }
