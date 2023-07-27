@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.praksa.team4.entities.Ingredients;
+import com.praksa.team4.entities.Recipe;
 import com.praksa.team4.entities.dto.IngredientsDTO;
 import com.praksa.team4.repositories.IngredientsRepository;
+import com.praksa.team4.repositories.RecipeRepository;
 
 @RestController
 @RequestMapping(path = "project/ingredients")
@@ -21,8 +23,8 @@ public class IngredientsController {
 	@Autowired
 	private IngredientsRepository ingredientsRepository;
 	
-//	@Autowired
-//	private RecipeRepository recipeRepository;
+	@Autowired
+	private RecipeRepository recipeRepository;
 	
 //  TODO CEKAMO ODGOVOR : Pretraga svih sastojaka integrisana u pisanje recepta.
 	
@@ -64,8 +66,7 @@ public class IngredientsController {
 	@RequestMapping(method = RequestMethod.PUT, path = "/{id}")
 	public ResponseEntity<?> updateIngredient(@PathVariable Integer id, @RequestBody IngredientsDTO updatedIngredient) {
 		Ingredients ingredient = ingredientsRepository.findById(id).get();
-
-		//TODO dodati svuda kad se trazi nesto preko id-a da se getuje/updateuje/deleteuje - uslov
+		
 		if (ingredient == null) {
 			return new ResponseEntity<>("No ingredient found with ID "+ id, HttpStatus.NOT_FOUND);
 		}
@@ -78,30 +79,28 @@ public class IngredientsController {
 		ingredient.setSugars(updatedIngredient.getSugars());
 		ingredient.setProteins(updatedIngredient.getProteins());
 		ingredient.setSaturatedFats(updatedIngredient.getSaturatedFats());
-		//TODO da moze alergen da se updateuje
 		ingredient.setAllergen(updatedIngredient.getAllergen());
 
 		ingredientsRepository.save(ingredient);
 		return new ResponseEntity<>(ingredient, HttpStatus.OK);
 	}
 	
-//	@RequestMapping(method = RequestMethod.DELETE, path = "/{ingredient_id}")
-//	public ResponseEntity<?> deleteIngredient(@PathVariable Integer ingredient_id) {
-//		Optional<Ingredients> ingredient = ingredientsRepository.findById(ingredient_id);
-//		
-//		if (ingredient == null) {
-//			return new ResponseEntity<>("No ingredient found with ID "+ ingredient_id, HttpStatus.NOT_FOUND);
-//		}
-//		
-//		for (Recipe recipe : recipeRepository.findAll()) {
-//			if (recipe.get().getIngredients().contains(ingredient)) {
-//				recipe.get().getIngredients().remove(ingredient);
-//				recipeRepository.save(recipe);
-//			}
-//		}
-//			ingredientsRepository.delete(ingredient.get());
-//			return new ResponseEntity<>("Ingredient '" + ingredient.get().name + "' has been deleted successfully.", HttpStatus.OK);
-//		}
-//	}
+	@RequestMapping(method = RequestMethod.DELETE, path = "/{ingredient_id}")
+	public ResponseEntity<?> deleteIngredient(@PathVariable Integer ingredient_id) {
+		Optional<Ingredients> ingredient = ingredientsRepository.findById(ingredient_id);
+		
+		if (ingredient == null) {
+			return new ResponseEntity<>("No ingredient found with ID "+ ingredient_id, HttpStatus.NOT_FOUND);
+		}
+		
+		for (Recipe recipe : recipeRepository.findAll()) {
+			if (recipe.getIngredients().contains(ingredient.get())) {
+				recipe.getIngredients().remove(ingredient.get());
+				recipeRepository.save(recipe);
+			}
+		}
+			ingredientsRepository.delete(ingredient.get());
+			return new ResponseEntity<>("Ingredient '" + ingredient.get().name + "' has been deleted successfully.", HttpStatus.OK);
+	}
 	
 }
