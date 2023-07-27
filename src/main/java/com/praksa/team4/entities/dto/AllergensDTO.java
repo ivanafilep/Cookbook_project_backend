@@ -76,11 +76,11 @@ public class AllergensDTO {
 		this.icon = icon;
 	}
 
-	public Ingredients getIngredients() {
+	public Ingredients getIngredient() {
 		return ingredient;
 	}
 
-	public void setIngredients(Ingredients ingredients) {
+	public void setIngredient(Ingredients ingredient) {
 		this.ingredient = ingredient;
 	}
 
