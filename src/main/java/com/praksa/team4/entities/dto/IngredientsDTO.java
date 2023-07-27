@@ -1,8 +1,7 @@
-package com.praksa.team4.entities;
+package com.praksa.team4.entities.dto;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,19 +9,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.praksa.team4.entities.Allergens;
+import com.praksa.team4.entities.Recipe;
 
-@Entity
-@Table(name = "ingredients")
-@JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
-public class Ingredients {
+public class IngredientsDTO {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
-	
+
 	@Column
 	@NotNull(message = "Name must be included.")
 	public String name;
@@ -58,9 +54,9 @@ public class Ingredients {
 	@JoinColumn(name = "recipe")
 	public Recipe recipe;
 
-	public Ingredients() {}
+	public IngredientsDTO() {}
 
-	public Ingredients(Integer id, @NotNull(message = "Name must be included.") String name,
+	public IngredientsDTO(Integer id, @NotNull(message = "Name must be included.") String name,
 			@NotNull(message = "Unit must be included.") String unit,
 			@NotNull(message = "Calories must be included.") Float calories, Float carbs, Float fats, Float sugars,
 			Float proteins, Float saturatedFats, Allergens allergen, Recipe recipe) {
@@ -165,5 +161,5 @@ public class Ingredients {
 	public void setRecipe(Recipe recipe) {
 		this.recipe = recipe;
 	}
-
+	
 }
