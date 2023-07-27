@@ -18,13 +18,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "recipe")
-@JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
+@JsonIgnoreProperties({ "handler", "hibernateLazyInitializer" })
 public class Recipe {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
-	
+
 	@Column
 	@NotNull(message = "Name must be included.")
 	public String name;
@@ -32,31 +32,32 @@ public class Recipe {
 	@Column
 	@NotNull(message = "Steps must be included.")
 	public String steps;
-	
+
 	@Column
 	@NotNull(message = "Time must be included.")
 	public Integer time;
-	
+
 	@Column
 	@NotNull(message = "Amount must be included.")
 	public Integer amount;
-	
+
 	@Column
 	public String picture;
-	
+
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "chef")
 	private Chef chef;
-	
+
 	@JsonIgnore
 	@OneToMany(mappedBy = "recipe", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	public List<Ingredients> ingredients;
-	
+
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "myCookBook")
 	private MyCookBook myCookBook;
 
-	public Recipe() {}
+	public Recipe() {
+	}
 
 	public Recipe(Integer id, @NotNull(message = "Name must be included.") String name,
 			@NotNull(message = "Steps must be included.") String steps,
@@ -146,5 +147,5 @@ public class Recipe {
 	public void setPicture(String picture) {
 		this.picture = picture;
 	}
-	
+
 }
