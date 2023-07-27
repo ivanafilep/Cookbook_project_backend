@@ -17,6 +17,7 @@ import com.praksa.team4.repositories.AdminRepository;
 @RestController
 @RequestMapping(path = "project/admin")
 public class AdminController {
+	
 	@Autowired
 	private AdminRepository adminRepository;
 	
