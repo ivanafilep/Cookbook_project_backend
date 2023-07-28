@@ -21,7 +21,7 @@ public class RegularUser extends UserEntity {
 	@OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "myCookBook")
 	private MyCookBook myCookBook;
-	// pravi se nova lista alergena za datog regularUsera
+	
 	@OneToMany(mappedBy = "regularUser", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private List<RegularUserAllergens> myAllergens = new ArrayList<RegularUserAllergens>();
 

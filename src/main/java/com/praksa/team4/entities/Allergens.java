@@ -1,6 +1,7 @@
 package com.praksa.team4.entities;
 
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,50 +9,47 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "allergens")
-@JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
+@JsonIgnoreProperties({ "handler", "hibernateLazyInitializer" })
 public class Allergens {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
-	
+
 	@Column
 	@NotNull(message = "Name must be included.")
 	public String name;
-	
+
 	@Column
 	@NotNull(message = "Icon must be included.")
 	public String icon;
-	
+
 	@OneToMany(mappedBy = "allergen", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	public List<Ingredients> ingredient;
 
-	@OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "regularUser")
-	private List<RegularUserAllergens> regularUser;
-	
-	public Allergens() {}
+	@OneToMany(mappedBy = "regularUser", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	private List<RegularUserAllergens> regularUserAllergens;
+
+	public Allergens() {
+	}
 
 	public Allergens(Integer id, @NotNull(message = "Name must be included.") String name,
 			@NotNull(message = "Icon must be included.") String icon, List<Ingredients> ingredient,
-			List<RegularUserAllergens> regularUser) {
+			List<RegularUserAllergens> regularUserAllergens) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
 		this.ingredient = ingredient;
-		this.regularUser = regularUser;
+		this.regularUserAllergens = regularUserAllergens;
 	}
 
 	public Integer getId() {
@@ -86,12 +84,12 @@ public class Allergens {
 		this.ingredient = ingredient;
 	}
 
-	public List<RegularUserAllergens> getRegularUser() {
-		return regularUser;
+	public List<RegularUserAllergens> getRegularUserAllergens() {
+		return regularUserAllergens;
 	}
 
-	public void setRegularUser(List<RegularUserAllergens> regularUser) {
-		this.regularUser = regularUser;
+	public void setRegularUser(List<RegularUserAllergens> regularUserAllergens) {
+		this.regularUserAllergens = regularUserAllergens;
 	}
-	
+
 }
