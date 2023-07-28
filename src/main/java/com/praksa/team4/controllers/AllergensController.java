@@ -54,7 +54,6 @@ public class AllergensController {
 		return new ResponseEntity<>(allergen, HttpStatus.OK);
 	}
 	
-	/*
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
 	public ResponseEntity<?> deleteAllergen(@PathVariable Integer id) {
 		Optional<Allergens> allergen = allergensRepository.findById(id);
@@ -74,8 +73,6 @@ public class AllergensController {
 		}
 		
 	}
-	*/
-	
 }
 		
 		

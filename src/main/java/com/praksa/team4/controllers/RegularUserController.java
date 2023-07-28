@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.praksa.team4.entities.MyCookBook;
 import com.praksa.team4.entities.RegularUser;
 import com.praksa.team4.entities.dto.UserDTO;
 import com.praksa.team4.repositories.RegularUserRepository;
@@ -23,7 +25,7 @@ public class RegularUserController {
 
 	@Autowired
 	private RegularUserRepository regularUserRepository;
-	
+
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAll() {
 		return new ResponseEntity<Iterable<RegularUser>>(regularUserRepository.findAll(), HttpStatus.OK);
@@ -40,9 +42,13 @@ public class RegularUserController {
 		newRegularUser.setPassword(newUser.getPassword());
 		newRegularUser.setRole("REGULAR_USER");
 
+		MyCookBook myCookBook = new MyCookBook();
+		newRegularUser.setMyCookBook(myCookBook);
+		
 		regularUserRepository.save(newRegularUser);
-		return new ResponseEntity<>(newRegularUser, HttpStatus.CREATED);	
+		return new ResponseEntity<>(newRegularUser, HttpStatus.CREATED);
 	}
+
 	@RequestMapping(method = RequestMethod.PUT, path = "/{id}")
 	public ResponseEntity<?> updateRegularUser(@PathVariable Integer id, @RequestBody UserDTO updatedRegularUser) {
 		RegularUser regularUser = regularUserRepository.findById(id).get();
@@ -55,6 +61,7 @@ public class RegularUserController {
 		regularUserRepository.save(regularUser);
 		return new ResponseEntity<>(regularUser, HttpStatus.OK);
 	}
+
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
 	public ResponseEntity<?> deleteRegularUser(@PathVariable Integer id) {
 		Optional<RegularUser> regularUser = regularUserRepository.findById(id);
@@ -65,15 +72,17 @@ public class RegularUserController {
 			return new ResponseEntity<>("Deleted successfully!", HttpStatus.OK);
 		}
 	}
+
 	@RequestMapping(method = RequestMethod.GET, path = "/{id}")
 	public ResponseEntity<?> getRegularUserById(@PathVariable Integer id) {
-		Optional<RegularUser>regularUser = regularUserRepository.findById(id);
+		Optional<RegularUser> regularUser = regularUserRepository.findById(id);
 
 		if (!regularUser.isPresent()) {
 			return new ResponseEntity<>("Regular user not found!", HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(regularUser.get(), HttpStatus.OK);
 	}
+
 	@RequestMapping(method = RequestMethod.GET, path = "/by_name")
 	public ResponseEntity<?> getRegularUserByName(@RequestParam String name) {
 		Optional<RegularUser> regularUser = regularUserRepository.findByName(name);

@@ -12,24 +12,24 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "ingredients")
-@JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
+@JsonIgnoreProperties({ "handler", "hibernateLazyInitializer" })
 public class Ingredients {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
-	
+
 	@Column
 	@NotNull(message = "Name must be included.")
 	public String name;
-	
+
 	@Column
 	@NotNull(message = "Unit must be included.")
 	public String unit;
@@ -46,30 +46,29 @@ public class Ingredients {
 
 	@Column
 	public Float sugars;
-	
+
 	@Column
 	public Float proteins;
 
 	@Column
 	public Float saturatedFats;
-	
+
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "allergen")
 	public Allergens allergen;
-	
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "recipe")
-	public Recipe recipe;
-	
+
 	@OneToMany(mappedBy = "ingredients", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	public List<RecipeIngredient> recipeIngredient;
 
-	public Ingredients() {}
+	public Ingredients() {
+	}
+	
+	
 
 	public Ingredients(Integer id, @NotNull(message = "Name must be included.") String name,
 			@NotNull(message = "Unit must be included.") String unit,
 			@NotNull(message = "Calories must be included.") Float calories, Float carbs, Float fats, Float sugars,
-			Float proteins, Float saturatedFats, Allergens allergen, Recipe recipe) {
+			Float proteins, Float saturatedFats, Allergens allergen, List<RecipeIngredient> recipeIngredient) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -81,8 +80,10 @@ public class Ingredients {
 		this.proteins = proteins;
 		this.saturatedFats = saturatedFats;
 		this.allergen = allergen;
-		this.recipe = recipe;
+		this.recipeIngredient = recipeIngredient;
 	}
+
+
 
 	public Integer getId() {
 		return id;
@@ -164,12 +165,15 @@ public class Ingredients {
 		this.allergen = allergen;
 	}
 
-	public Recipe getRecipe() {
-		return recipe;
+
+
+	public List<RecipeIngredient> getRecipeIngredient() {
+		return recipeIngredient;
 	}
 
-	public void setRecipe(Recipe recipe) {
-		this.recipe = recipe;
-	}
 
+
+	public void setRecipeIngredient(List<RecipeIngredient> recipeIngredient) {
+		this.recipeIngredient = recipeIngredient;
+	}
 }
