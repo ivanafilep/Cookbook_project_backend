@@ -45,6 +45,8 @@ public class RecipeServiceImpl implements RecipeService {
 		recipe.setSteps(newRecipe.getSteps());
 		recipe.setAmount(newRecipe.getAmount());
 		recipe.setPicture(newRecipe.getPicture());
+		// TODO for chef get TOKEN
+		// TODO get Ingredients
 
 		recipeRepository.save(recipe);
 		logger.info("Saving recipe to the database");

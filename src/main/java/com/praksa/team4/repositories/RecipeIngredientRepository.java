@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import com.praksa.team4.entities.RecipeIngredient;
 
 public interface RecipeIngredientRepository extends CrudRepository<RecipeIngredient, Integer> {
-
+	
 }

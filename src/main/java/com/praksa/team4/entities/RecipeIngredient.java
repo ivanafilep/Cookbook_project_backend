@@ -26,6 +26,10 @@ public class RecipeIngredient {
 	@JoinColumn(name = "ingredients")
 	private Ingredients ingredients;
 
+	public RecipeIngredient() {
+		super();
+	}
+
 	public RecipeIngredient(Integer id, Recipe recipe, Ingredients ingredients) {
 		super();
 		this.id = id;
