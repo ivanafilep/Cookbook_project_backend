@@ -12,6 +12,7 @@ import com.praksa.team4.services.RecipeIngredientsServiceImpl;
 @RestController
 @RequestMapping(path = "project/recipeIngredients")
 public class RecipeIngredientsController {
+	
 	@Autowired
 	private RecipeIngredientsServiceImpl recipeIngredientsServiceImpl;
 

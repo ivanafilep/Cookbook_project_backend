@@ -53,6 +53,7 @@ public class Recipe {
 	@JoinColumn(name = "myCookBook")
 	private MyCookBook myCookBook;
 	
+	
 	@OneToMany(mappedBy = "recipe", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	public List<RecipeIngredient> recipeIngredients;
 
