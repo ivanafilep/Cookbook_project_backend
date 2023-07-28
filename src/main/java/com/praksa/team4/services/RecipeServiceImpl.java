@@ -19,49 +19,52 @@ public class RecipeServiceImpl implements RecipeService {
 
 	@Autowired
 	private RecipeRepository recipeRepository;
-	
+
 	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
-	
+
 	public ResponseEntity<?> createRecipe(RecipeDTO newRecipe, BindingResult result) {
 
 		if (result.hasErrors()) {
-	        logger.info("Validating input parameters for recipe");
+			logger.info("Validating input parameters for recipe");
 			return new ResponseEntity<>(ErrorMessageHelper.createErrorMessage(result), HttpStatus.BAD_REQUEST);
 		}
-		
+
 		Recipe existingRecipe = recipeRepository.findByName(newRecipe.getName());
-        logger.info("Checking whether theres an existing recipe in the database");
+		logger.info("Checking whether theres an existing recipe in the database");
 
 		if (existingRecipe != null) {
-	        logger.error("Recipe with the same name already exists");
-			return new ResponseEntity<RESTError>(new RESTError(1, "A subject with the same name already exists"), HttpStatus.CONFLICT);
+			logger.error("Recipe with the same name already exists");
+			return new ResponseEntity<RESTError>(new RESTError(1, "A recipe with the same name already exists"),
+					HttpStatus.CONFLICT);
 		}
-		
+
 		Recipe recipe = new Recipe();
-		
+
 		recipe.setName(newRecipe.getName());
 		recipe.setTime(newRecipe.getTime());
 		recipe.setSteps(newRecipe.getSteps());
 		recipe.setAmount(newRecipe.getAmount());
+		recipe.setPicture(newRecipe.getPicture());
 
 		recipeRepository.save(recipe);
-        logger.info("Saving recipe to the database");
-        
+		logger.info("Saving recipe to the database");
+
 		return new ResponseEntity<Recipe>(recipe, HttpStatus.CREATED);
 	}
-	
+
 	public ResponseEntity<?> updateRecipe(RecipeDTO updatedRecipe, BindingResult result, Integer id) {
 
 		if (result.hasErrors()) {
-	        logger.info("Validating input parameters for recipe");
+			logger.info("Validating input parameters for recipe");
 			return new ResponseEntity<>(ErrorMessageHelper.createErrorMessage(result), HttpStatus.BAD_REQUEST);
 		}
-		
+
 		Recipe recipe = recipeRepository.findById(id).orElse(null);
 
 		if (recipe == null) {
-	        logger.error("No recipe with " + id + " ID found");
-			return new ResponseEntity<RESTError>(new RESTError(1, "No recipe with " + id + " ID found"), HttpStatus.NOT_FOUND);
+			logger.error("No recipe with " + id + " ID found");
+			return new ResponseEntity<RESTError>(new RESTError(1, "No recipe with " + id + " ID found"),
+					HttpStatus.NOT_FOUND);
 		}
 
 		recipe.setName(updatedRecipe.getName());
@@ -70,8 +73,12 @@ public class RecipeServiceImpl implements RecipeService {
 		recipe.setAmount(updatedRecipe.getAmount());
 
 		recipeRepository.save(recipe);
-        logger.info("Saving recipe to the database");
+		logger.info("Saving recipe to the database");
 
 		return new ResponseEntity<Recipe>(recipe, HttpStatus.OK);
+	}
+
+	public ResponseEntity<?> deleteRecipe(RecipeDTO deletedRecipe, BindingResult result) {
+		return null;
 	}
 }

@@ -3,26 +3,20 @@ package com.praksa.team4.entities.dto;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+
 import com.praksa.team4.entities.Allergens;
 import com.praksa.team4.entities.Recipe;
 
 public class IngredientsDTO {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
 
 	@Column
 	@NotNull(message = "Name must be included.")
 	public String name;
-	
+
 	@Column
 	@NotNull(message = "Unit must be included.")
 	public String unit;
@@ -39,29 +33,29 @@ public class IngredientsDTO {
 
 	@Column
 	public Float sugars;
-	
+
 	@Column
 	public Float proteins;
 
 	@Column
 	public Float saturatedFats;
-	
+
 	@OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "allergen")
 	public Allergens allergen;
-	
+
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "recipe")
 	public Recipe recipe;
 
-	public IngredientsDTO() {}
+	public IngredientsDTO() {
+	}
 
-	public IngredientsDTO(Integer id, @NotNull(message = "Name must be included.") String name,
+	public IngredientsDTO(@NotNull(message = "Name must be included.") String name,
 			@NotNull(message = "Unit must be included.") String unit,
 			@NotNull(message = "Calories must be included.") Float calories, Float carbs, Float fats, Float sugars,
 			Float proteins, Float saturatedFats, Allergens allergen, Recipe recipe) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.unit = unit;
 		this.calories = calories;
@@ -72,14 +66,6 @@ public class IngredientsDTO {
 		this.saturatedFats = saturatedFats;
 		this.allergen = allergen;
 		this.recipe = recipe;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public String getName() {
@@ -161,5 +147,5 @@ public class IngredientsDTO {
 	public void setRecipe(Recipe recipe) {
 		this.recipe = recipe;
 	}
-	
+
 }

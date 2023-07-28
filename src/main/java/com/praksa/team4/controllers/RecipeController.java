@@ -1,5 +1,7 @@
 package com.praksa.team4.controllers;
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.praksa.team4.entities.Recipe;
+import com.praksa.team4.entities.RecipeIngredient;
 import com.praksa.team4.entities.dto.RecipeDTO;
+import com.praksa.team4.repositories.RecipeIngredientRepository;
 import com.praksa.team4.repositories.RecipeRepository;
 import com.praksa.team4.services.RecipeServiceImpl;
 
@@ -26,6 +31,9 @@ public class RecipeController {
 
 	@Autowired
 	private RecipeServiceImpl recipeServiceImpl;
+
+	@Autowired
+	private RecipeIngredientRepository recipeIngredientRepository;
 
 	// pregled liste svih recepata
 	@RequestMapping(method = RequestMethod.GET)
@@ -44,9 +52,42 @@ public class RecipeController {
 			@PathVariable Integer id) {
 		return recipeServiceImpl.updateRecipe(updatedRecipe, result, id);
 	}
-	
-	@RequestMapping(value = "/search/{name}", method = RequestMethod.GET)
-	private String getRecipeByName(@PathVariable("name") String Name) {
-		return null;
+
+	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
+	public ResponseEntity<?> deleteRecipe(@PathVariable Integer id) {
+		Optional<Recipe> recipe = recipeRepository.findById(id);
+		if (recipe == null) {
+			return new ResponseEntity<>("No ingredient found with ID " + id, HttpStatus.NOT_FOUND);
+		}
+
+		for (RecipeIngredient recipeIngredient : recipe.get().getRecipeIngredients()) {
+			recipe.get().getRecipeIngredients().remove(recipeIngredient);
+			recipeIngredientRepository.save(recipeIngredient);
+		}
+		// TODO delete from MyCookBook
+		
+		recipeRepository.delete(recipe.get());
+		return new ResponseEntity<>("Deleted successfully!", HttpStatus.OK);
 	}
+
+	@RequestMapping(method = RequestMethod.GET, path = "/by_name")
+	public ResponseEntity<?> getRecipeByName(@RequestParam String name) {
+		Recipe recipe = recipeRepository.findByName(name);
+
+		if (recipe == null) {
+			return new ResponseEntity<>("Recipe not found!", HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(recipe, HttpStatus.OK);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, path = "/{id}")
+	public ResponseEntity<?> getRecipeById(@PathVariable Integer id) {
+		Optional<Recipe> recipe = recipeRepository.findById(id);
+
+		if (!recipe.isPresent()) {
+			return new ResponseEntity<>("Recipe not found!", HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(recipe.get(), HttpStatus.OK);
+	}
+
 }
