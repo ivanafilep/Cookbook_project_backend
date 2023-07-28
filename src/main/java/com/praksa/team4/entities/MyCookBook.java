@@ -24,6 +24,7 @@ public class MyCookBook {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
+	//TODO manytomany
 	@JsonIgnore
 	@OneToMany(mappedBy = "myCookBook", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	public List<Recipe> myRecipes;

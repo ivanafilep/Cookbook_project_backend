@@ -31,6 +31,8 @@ public class Allergens {
 	@Column
 	@NotNull(message = "Icon must be included.")
 	public String icon;
+	
+	// TODO static folder urls
 
 	@OneToMany(mappedBy = "allergen", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	public List<Ingredients> ingredient;
