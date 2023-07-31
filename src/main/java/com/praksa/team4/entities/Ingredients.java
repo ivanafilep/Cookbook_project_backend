@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -57,18 +59,20 @@ public class Ingredients {
 	@JoinColumn(name = "allergen")
 	public Allergens allergen;
 
-	@OneToMany(mappedBy = "ingredients", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	public List<RecipeIngredient> recipeIngredient;
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinTable(name = "RecipeIngredient", joinColumns = {
+			@JoinColumn(name = "Ingredients_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+					@JoinColumn(name = "Recipe_id", nullable = false, updatable = false) })
+
+	public List<Recipe> recipes;
 
 	public Ingredients() {
 	}
-	
-	
 
 	public Ingredients(Integer id, @NotNull(message = "Name must be included.") String name,
 			@NotNull(message = "Unit must be included.") String unit,
 			@NotNull(message = "Calories must be included.") Float calories, Float carbs, Float fats, Float sugars,
-			Float proteins, Float saturatedFats, Allergens allergen, List<RecipeIngredient> recipeIngredient) {
+			Float proteins, Float saturatedFats, Allergens allergen, List<Recipe> recipes) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -80,10 +84,8 @@ public class Ingredients {
 		this.proteins = proteins;
 		this.saturatedFats = saturatedFats;
 		this.allergen = allergen;
-		this.recipeIngredient = recipeIngredient;
+		this.recipes = recipes;
 	}
-
-
 
 	public Integer getId() {
 		return id;
@@ -165,15 +167,12 @@ public class Ingredients {
 		this.allergen = allergen;
 	}
 
-
-
-	public List<RecipeIngredient> getRecipeIngredient() {
-		return recipeIngredient;
+	public List<Recipe> getRecipes() {
+		return recipes;
 	}
 
-
-
-	public void setRecipeIngredient(List<RecipeIngredient> recipeIngredient) {
-		this.recipeIngredient = recipeIngredient;
+	public void setRecipes(List<Recipe> recipes) {
+		this.recipes = recipes;
 	}
+
 }

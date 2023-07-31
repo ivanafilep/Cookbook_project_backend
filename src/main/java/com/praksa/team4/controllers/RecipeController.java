@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.praksa.team4.entities.Ingredients;
 import com.praksa.team4.entities.Recipe;
-import com.praksa.team4.entities.RecipeIngredient;
 import com.praksa.team4.entities.dto.RecipeDTO;
-import com.praksa.team4.repositories.RecipeIngredientRepository;
+import com.praksa.team4.repositories.IngredientsRepository;
 import com.praksa.team4.repositories.RecipeRepository;
 import com.praksa.team4.services.RecipeServiceImpl;
 
@@ -28,12 +28,11 @@ public class RecipeController {
 
 	@Autowired
 	private RecipeRepository recipeRepository;
+	@Autowired
+	private IngredientsRepository ingredientsRepository;
 
 	@Autowired
 	private RecipeServiceImpl recipeServiceImpl;
-
-	@Autowired
-	private RecipeIngredientRepository recipeIngredientRepository;
 
 	// pregled liste svih recepata
 	@RequestMapping(method = RequestMethod.GET)
@@ -60,12 +59,12 @@ public class RecipeController {
 			return new ResponseEntity<>("No ingredient found with ID " + id, HttpStatus.NOT_FOUND);
 		}
 
-		for (RecipeIngredient recipeIngredient : recipe.get().getRecipeIngredients()) {
-			recipe.get().getRecipeIngredients().remove(recipeIngredient);
-			recipeIngredientRepository.save(recipeIngredient);
+		for (Ingredients ingredient : recipe.get().getIngredients()) {
+			recipe.get().getIngredients().remove(ingredient);
+			ingredientsRepository.save(ingredient);
 		}
 		// TODO delete from MyCookBook
-		
+
 		recipeRepository.delete(recipe.get());
 		return new ResponseEntity<>("Deleted successfully!", HttpStatus.OK);
 	}

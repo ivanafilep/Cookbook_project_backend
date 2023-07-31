@@ -8,6 +8,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -24,22 +27,24 @@ public class MyCookBook {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
-	//TODO manytomany
-	@JsonIgnore
-	@OneToMany(mappedBy = "myCookBook", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	public List<Recipe> myRecipes;
-
 	@OneToOne(mappedBy = "myCookBook", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private RegularUser regularUser;
+
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinTable(name = "MyCookBook_Recipes", joinColumns = {
+			@JoinColumn(name = "MyCookBook_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+					@JoinColumn(name = "Recipes_id", nullable = false, updatable = false) })
+
+	private List<Recipe> recipes;
 
 	public MyCookBook() {
 	}
 
-	public MyCookBook(Integer id, List<Recipe> myRecipes, RegularUser regularUser) {
+	public MyCookBook(Integer id, RegularUser regularUser, List<Recipe> recipes) {
 		super();
 		this.id = id;
-		this.myRecipes = myRecipes;
 		this.regularUser = regularUser;
+		this.recipes = recipes;
 	}
 
 	public Integer getId() {
@@ -50,12 +55,12 @@ public class MyCookBook {
 		this.id = id;
 	}
 
-	public List<Recipe> getMyRecipes() {
-		return myRecipes;
+	public List<Recipe> getRecipes() {
+		return recipes;
 	}
 
-	public void setMyRecipes(List<Recipe> myRecipes) {
-		this.myRecipes = myRecipes;
+	public void setRecipes(List<Recipe> recipes) {
+		this.recipes = recipes;
 	}
 
 	public RegularUser getRegularUser() {

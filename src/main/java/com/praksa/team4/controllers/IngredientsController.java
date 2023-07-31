@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.praksa.team4.entities.Ingredients;
-import com.praksa.team4.entities.RecipeIngredient;
+import com.praksa.team4.entities.Recipe;
 import com.praksa.team4.entities.dto.IngredientsDTO;
 import com.praksa.team4.repositories.IngredientsRepository;
-import com.praksa.team4.repositories.RecipeIngredientRepository;
 import com.praksa.team4.repositories.RecipeRepository;
 
 @RestController
@@ -29,9 +28,6 @@ public class IngredientsController {
 
 	@Autowired
 	private RecipeRepository recipeRepository;
-	
-	@Autowired
-	private RecipeIngredientRepository recipeIngredientRepository;
 
 //  TODO CEKAMO ODGOVOR : Pretraga svih sastojaka integrisana u pisanje recepta.
 
@@ -101,10 +97,10 @@ public class IngredientsController {
 			return new ResponseEntity<>("No ingredient found with ID " + ingredient_id, HttpStatus.NOT_FOUND);
 		}
 
-		for (RecipeIngredient recipeIngredient : ingredient.get().getRecipeIngredient()) {
-			ingredient.get().getRecipeIngredient().remove(recipeIngredient);
-			recipeIngredientRepository.save(recipeIngredient);
-			
+		for (Recipe recipe : ingredient.get().getRecipes()) {
+			ingredient.get().getRecipes().remove(recipe);
+			recipeRepository.save(recipe);
+
 		}
 		ingredientsRepository.delete(ingredient.get());
 		return new ResponseEntity<>("Ingredient '" + ingredient.get().name + "' has been deleted successfully.",

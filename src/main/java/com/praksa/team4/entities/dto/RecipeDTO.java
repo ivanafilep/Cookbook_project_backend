@@ -5,8 +5,8 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import com.praksa.team4.entities.Chef;
+import com.praksa.team4.entities.Ingredients;
 import com.praksa.team4.entities.MyCookBook;
-import com.praksa.team4.entities.RecipeIngredient;
 
 public class RecipeDTO {
 
@@ -26,7 +26,7 @@ public class RecipeDTO {
 
 	private Chef chefId;
 
-	public List<RecipeIngredient> recipeIngredients;
+	public List<Ingredients> ingredients;
 
 	private MyCookBook myCookBookId;
 
@@ -38,7 +38,7 @@ public class RecipeDTO {
 			@NotNull(message = "Steps must be included.") String steps,
 			@NotNull(message = "Time must be included.") Integer time,
 			@NotNull(message = "Amount must be included.") Integer amount, String picture, Chef chefId,
-			List<RecipeIngredient> recipeIngredients, MyCookBook myCookBookId) {
+			List<Ingredients> ingredients, MyCookBook myCookBookId) {
 		super();
 		this.name = name;
 		this.steps = steps;
@@ -46,10 +46,9 @@ public class RecipeDTO {
 		this.amount = amount;
 		this.picture = picture;
 		this.chefId = chefId;
-		this.recipeIngredients = recipeIngredients;
+		this.ingredients = ingredients;
 		this.myCookBookId = myCookBookId;
 	}
-
 
 	public String getName() {
 		return name;
@@ -98,7 +97,7 @@ public class RecipeDTO {
 	public void setChefId(Chef chefId) {
 		this.chefId = chefId;
 	}
-	
+
 	public MyCookBook getMyCookBookId() {
 		return myCookBookId;
 	}
@@ -107,12 +106,12 @@ public class RecipeDTO {
 		this.myCookBookId = myCookBookId;
 	}
 
-	public List<RecipeIngredient> getRecipeIngredients() {
-		return recipeIngredients;
+	public List<Ingredients> getIngredients() {
+		return ingredients;
 	}
 
-	public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
-		this.recipeIngredients = recipeIngredients;
+	public void setIngredients(List<Ingredients> ingredients) {
+		this.ingredients = ingredients;
 	}
 
 }
