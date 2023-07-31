@@ -13,10 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -58,6 +58,7 @@ public class Recipe {
 
 	public List<Ingredients> ingredients;
 
+	@JsonIgnore
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinTable(name = "MyCookBook_Recipes", joinColumns = {
 			@JoinColumn(name = "Recipes_id", nullable = false, updatable = false) }, inverseJoinColumns = {

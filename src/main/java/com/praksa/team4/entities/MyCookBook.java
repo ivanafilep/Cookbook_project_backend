@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -27,6 +26,7 @@ public class MyCookBook {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
+	@JsonIgnore
 	@OneToOne(mappedBy = "myCookBook", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private RegularUser regularUser;
 

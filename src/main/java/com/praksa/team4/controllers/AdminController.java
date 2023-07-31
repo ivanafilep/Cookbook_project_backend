@@ -17,15 +17,15 @@ import com.praksa.team4.repositories.AdminRepository;
 @RestController
 @RequestMapping(path = "project/admin")
 public class AdminController {
-	
+
 	@Autowired
 	private AdminRepository adminRepository;
-	
+
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAll() {
 		return new ResponseEntity<Iterable<Admin>>(adminRepository.findAll(), HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addNewAdmin(@Valid @RequestBody UserDTO newUser) {
 		Admin newAdmin = new Admin();
@@ -38,9 +38,9 @@ public class AdminController {
 		newAdmin.setRole("ROLE_ADMIN");
 
 		adminRepository.save(newAdmin);
-		return new ResponseEntity<>(newAdmin, HttpStatus.CREATED);	
+		return new ResponseEntity<>(newAdmin, HttpStatus.CREATED);
 	}
-	
+
 	@RequestMapping(method = RequestMethod.PUT, path = "/{id}")
 	public ResponseEntity<?> updateAdmin(@PathVariable Integer id, @RequestBody UserDTO updatedAdmin) {
 		Admin admin = adminRepository.findById(id).get();
@@ -54,7 +54,7 @@ public class AdminController {
 		adminRepository.save(admin);
 		return new ResponseEntity<>(admin, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
 	public ResponseEntity<?> deleteAdmin(@PathVariable Integer id) {
 		Optional<Admin> admin = adminRepository.findById(id);

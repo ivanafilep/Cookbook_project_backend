@@ -23,7 +23,7 @@ public class RecipeServiceImpl implements RecipeService {
 
 	@Autowired
 	private RecipeRepository recipeRepository;
-	
+
 	@Autowired
 	private IngredientsRepository ingredientsRepository;
 
@@ -54,8 +54,7 @@ public class RecipeServiceImpl implements RecipeService {
 		recipe.setPicture(newRecipe.getPicture());
 		// TODO for chef get TOKEN
 		// TODO get Ingredients
-		
-		
+
 //		Ingredients ingredient = ingredientsRepository.findByName(newRecipe.getIngredients());
 //		if(recipeIngredients.isEmpty()){
 //			//RecipeIngredient ri = new RecipeIngredient();
@@ -66,8 +65,7 @@ public class RecipeServiceImpl implements RecipeService {
 //		}else {
 //			b.setGenre(lg.get(0));
 //		}
-		
-		
+
 		recipeRepository.save(recipe);
 		logger.info("Saving recipe to the database");
 

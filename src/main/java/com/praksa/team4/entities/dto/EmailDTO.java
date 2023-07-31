@@ -1,15 +1,14 @@
 package com.praksa.team4.entities.dto;
 
 public class EmailDTO {
-	
+
 	private String to;
 	private String subject;
 	private String text;
-	
+
 	public EmailDTO() {
 		super();
 	}
-	
 
 	public EmailDTO(String to, String subject, String text) {
 		super();
@@ -41,8 +40,5 @@ public class EmailDTO {
 	public void setText(String text) {
 		this.text = text;
 	}
-	
-	
 
-	
 }
