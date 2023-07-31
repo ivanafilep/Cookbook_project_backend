@@ -20,46 +20,49 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class UserEntity {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
-	
+
 	@Column
 	@NotNull(message = "Username must be specified")
-    @Size(min = 2, max = 30, message = "User name must be between {min} and {max} characters long.")
+	@Size(min = 2, max = 30, message = "User name must be between {min} and {max} characters long.")
 	private String username;
-	
+
 	@Column
-	//@JsonIgnore
-	//@Pattern(regexp = "^(?=.[0-9])(?=.[a-z])(?=.*[A-Z]).{8,100}$", message = "Password must be at least 8 characters long and contain a lowercase, an upercase letter and a number")
+	// @JsonIgnore
+	// @Pattern(regexp = "^(?=.[0-9])(?=.[a-z])(?=.*[A-Z]).{8,100}$", message =
+	// "Password must be at least 8 characters long and contain a lowercase, an
+	// upercase letter and a number")
 //    @NotNull(message = "Password must be specified")
 //    @Size(min = 8, max = 100, message = "Password must be between {min} and {max} characters long.")
 	private String password;
-	
+
 	@Column
 	@NotNull(message = "Name must be included.")
 	@Size(min = 2, max = 30, message = "Name must be between {min} and {max} characters long.")
 	private String name;
-	
+
 	@Column
 	@NotNull(message = "Lastname must be included.")
 	@Size(min = 2, max = 30, message = "Lastname must be between {min} and {max} characters long.")
 	private String lastname;
-	
+
 	@Column
 	@NotNull(message = "Email must be included.")
-	@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",
-	message="Email is not valid.")
+	@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.")
 	private String email;
-	
+
 	@Column
 	private String role;
-	
+
 	@Version
 	private Integer version;
 
-	public UserEntity() {}
+	public UserEntity() {
+	}
 
 	public UserEntity(Integer id,
 			@NotNull(message = "Username must be specified") @Size(min = 2, max = 30, message = "User name must be between {min} and {max} characters long.") String username,
@@ -142,5 +145,5 @@ public class UserEntity {
 	public void setVersion(Integer version) {
 		this.version = version;
 	}
-	
+
 }

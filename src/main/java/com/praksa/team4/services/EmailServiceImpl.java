@@ -7,13 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.praksa.team4.entities.dto.EmailDTO;
 
-
 @Service
 public class EmailServiceImpl implements EmailService {
-	
+
 	@Autowired
 	public JavaMailSender emailSender;
-	
+
 	@Override
 	public void sendSimpleMessage(EmailDTO emailDTO) {
 		SimpleMailMessage message = new SimpleMailMessage();
@@ -22,6 +21,5 @@ public class EmailServiceImpl implements EmailService {
 		message.setText(emailDTO.getText());
 		emailSender.send(message);
 	}
-	
 
 }

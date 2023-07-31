@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.praksa.team4.entities.MyCookBook;
 import com.praksa.team4.entities.RegularUser;
 import com.praksa.team4.entities.dto.UserDTO;
+import com.praksa.team4.repositories.CookBookRepository;
 import com.praksa.team4.repositories.RegularUserRepository;
 
 @RestController
@@ -25,6 +28,11 @@ public class RegularUserController {
 
 	@Autowired
 	private RegularUserRepository regularUserRepository;
+
+	@Autowired
+	private CookBookRepository cookBookRepository;
+
+	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAll() {
@@ -42,9 +50,14 @@ public class RegularUserController {
 		newRegularUser.setPassword(newUser.getPassword());
 		newRegularUser.setRole("REGULAR_USER");
 
+		regularUserRepository.save(newRegularUser);
+
 		MyCookBook myCookBook = new MyCookBook();
+		myCookBook.setRegularUser(newRegularUser);
+		logger.info("My cookbook" + myCookBook);
 		newRegularUser.setMyCookBook(myCookBook);
-		
+
+		cookBookRepository.save(myCookBook);
 		regularUserRepository.save(newRegularUser);
 		return new ResponseEntity<>(newRegularUser, HttpStatus.CREATED);
 	}
@@ -65,6 +78,7 @@ public class RegularUserController {
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
 	public ResponseEntity<?> deleteRegularUser(@PathVariable Integer id) {
 		Optional<RegularUser> regularUser = regularUserRepository.findById(id);
+		// TODO delete also MyCookBook
 		if (regularUser.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
