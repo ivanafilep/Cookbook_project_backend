@@ -1,11 +1,5 @@
 package com.praksa.team4.entities.dto;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import com.praksa.team4.entities.Allergens;
@@ -13,39 +7,27 @@ import com.praksa.team4.entities.Recipe;
 
 public class IngredientsDTO {
 
-	@Column
 	@NotNull(message = "Name must be included.")
 	public String name;
 
-	@Column
 	@NotNull(message = "Unit must be included.")
 	public String unit;
 
-	@Column
 	@NotNull(message = "Calories must be included.")
 	public Float calories;
 
-	@Column
 	public Float carbs;
 
-	@Column
 	public Float fats;
 
-	@Column
 	public Float sugars;
 
-	@Column
 	public Float proteins;
 
-	@Column
 	public Float saturatedFats;
 
-	@OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "allergen")
 	public Allergens allergen;
 
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "recipe")
 	public Recipe recipe;
 
 	public IngredientsDTO() {

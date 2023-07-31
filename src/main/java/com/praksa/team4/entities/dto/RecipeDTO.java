@@ -28,7 +28,7 @@ public class RecipeDTO {
 
 	public List<Ingredients> ingredients;
 
-	public List<MyCookBook> myCookBook;
+	public MyCookBook myCookBook;
 
 	public RecipeDTO() {
 		super();
@@ -38,7 +38,7 @@ public class RecipeDTO {
 			@NotNull(message = "Steps must be included.") String steps,
 			@NotNull(message = "Time must be included.") Integer time,
 			@NotNull(message = "Amount must be included.") Integer amount, String picture, Chef chefId,
-			List<Ingredients> ingredients, List<MyCookBook> myCookBook) {
+			List<Ingredients> ingredients, MyCookBook myCookBook) {
 		super();
 		this.name = name;
 		this.steps = steps;
@@ -98,11 +98,11 @@ public class RecipeDTO {
 		this.chefId = chefId;
 	}
 
-	public List<MyCookBook> getMyCookBook() {
+	public MyCookBook getMyCookBook() {
 		return myCookBook;
 	}
 
-	public void setMyCookBook(List<MyCookBook> myCookBook) {
+	public void setMyCookBook(MyCookBook myCookBook) {
 		this.myCookBook = myCookBook;
 	}
 

@@ -1,7 +1,5 @@
 package com.praksa.team4.entities;
 
-import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -58,12 +56,12 @@ public class Ingredients {
 	@JoinColumn(name = "allergen")
 	public Allergens allergen;
 
+	// manytoone
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinTable(name = "RecipeIngredient", joinColumns = {
 			@JoinColumn(name = "Ingredients_id", nullable = false, updatable = false) }, inverseJoinColumns = {
 					@JoinColumn(name = "Recipe_id", nullable = false, updatable = false) })
-
-	public List<Recipe> recipes;
+	public Recipe recipe;
 
 	public Ingredients() {
 	}
@@ -71,7 +69,7 @@ public class Ingredients {
 	public Ingredients(Integer id, @NotNull(message = "Name must be included.") String name,
 			@NotNull(message = "Unit must be included.") String unit,
 			@NotNull(message = "Calories must be included.") Float calories, Float carbs, Float fats, Float sugars,
-			Float proteins, Float saturatedFats, Allergens allergen, List<Recipe> recipes) {
+			Float proteins, Float saturatedFats, Allergens allergen, Recipe recipe) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -83,7 +81,7 @@ public class Ingredients {
 		this.proteins = proteins;
 		this.saturatedFats = saturatedFats;
 		this.allergen = allergen;
-		this.recipes = recipes;
+		this.recipe = recipe;
 	}
 
 	public Integer getId() {
@@ -166,12 +164,12 @@ public class Ingredients {
 		this.allergen = allergen;
 	}
 
-	public List<Recipe> getRecipes() {
-		return recipes;
+	public Recipe getRecipe() {
+		return recipe;
 	}
 
-	public void setRecipes(List<Recipe> recipes) {
-		this.recipes = recipes;
+	public void setRecipe(Recipe recipe) {
+		this.recipe = recipe;
 	}
 
 }

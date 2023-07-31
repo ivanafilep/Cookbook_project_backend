@@ -51,6 +51,7 @@ public class Recipe {
 	@JoinColumn(name = "chef")
 	private Chef chef;
 
+	// onetomany
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	@JoinTable(name = "RecipeIngredient", joinColumns = {
 			@JoinColumn(name = "Recipe_id", nullable = false, updatable = false) }, inverseJoinColumns = {
@@ -58,22 +59,20 @@ public class Recipe {
 
 	public List<Ingredients> ingredients;
 
+	// manytoone
 	@JsonIgnore
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinTable(name = "MyCookBook_Recipes", joinColumns = {
 			@JoinColumn(name = "Recipes_id", nullable = false, updatable = false) }, inverseJoinColumns = {
 					@JoinColumn(name = "MyCookBook_id", nullable = false, updatable = false) })
 
-	public List<MyCookBook> myCookBook;
-
-	public Recipe() {
-	}
+	public MyCookBook myCookBook;
 
 	public Recipe(Integer id, @NotNull(message = "Name must be included.") String name,
 			@NotNull(message = "Steps must be included.") String steps,
 			@NotNull(message = "Time must be included.") Integer time,
 			@NotNull(message = "Amount must be included.") Integer amount, String picture, Chef chef,
-			List<Ingredients> ingredients, List<MyCookBook> myCookBook) {
+			List<Ingredients> ingredients, MyCookBook myCookBook) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -84,6 +83,9 @@ public class Recipe {
 		this.chef = chef;
 		this.ingredients = ingredients;
 		this.myCookBook = myCookBook;
+	}
+
+	public Recipe() {
 	}
 
 	public Integer getId() {
@@ -142,20 +144,20 @@ public class Recipe {
 		this.chef = chef;
 	}
 
-	public List<MyCookBook> getMyCookBook() {
-		return myCookBook;
-	}
-
-	public void setMyCookBook(List<MyCookBook> myCookBook) {
-		this.myCookBook = myCookBook;
-	}
-
 	public List<Ingredients> getIngredients() {
 		return ingredients;
 	}
 
 	public void setIngredients(List<Ingredients> ingredients) {
 		this.ingredients = ingredients;
+	}
+
+	public MyCookBook getMyCookBook() {
+		return myCookBook;
+	}
+
+	public void setMyCookBook(MyCookBook myCookBook) {
+		this.myCookBook = myCookBook;
 	}
 
 }

@@ -40,25 +40,26 @@ public class Allergens {
 	@OneToMany(mappedBy = "allergen", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private List<Ingredients> ingredient;
 
+	// manytoone
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinTable(name = "RegularUserAllergens", joinColumns = {
 			@JoinColumn(name = "Allergens_id", nullable = false, updatable = false) }, inverseJoinColumns = {
 					@JoinColumn(name = "RegularUser_id", nullable = false, updatable = false) })
 
-	private List<RegularUser> regularUsers;
-
-	public Allergens() {
-	}
+	private RegularUser regularUsers;
 
 	public Allergens(Integer id, @NotNull(message = "Name must be included.") String name,
 			@NotNull(message = "Icon must be included.") String icon, List<Ingredients> ingredient,
-			List<RegularUser> regularUsers) {
+			RegularUser regularUsers) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
 		this.ingredient = ingredient;
 		this.regularUsers = regularUsers;
+	}
+
+	public Allergens() {
 	}
 
 	public Integer getId() {
@@ -93,12 +94,11 @@ public class Allergens {
 		this.ingredient = ingredient;
 	}
 
-	public List<RegularUser> getRegularUsers() {
+	public RegularUser getRegularUsers() {
 		return regularUsers;
 	}
 
-	public void setRegularUsers(List<RegularUser> regularUsers) {
+	public void setRegularUsers(RegularUser regularUsers) {
 		this.regularUsers = regularUsers;
 	}
-
 }
