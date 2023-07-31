@@ -1,6 +1,5 @@
 package com.praksa.team4.entities;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -9,11 +8,9 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -25,6 +22,7 @@ public class RegularUser extends UserEntity {
 	@JoinColumn(name = "myCookBook")
 	private MyCookBook myCookBook;
 
+	// onetomany
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinTable(name = "RegularUserAllergens", joinColumns = {
 			@JoinColumn(name = "RegularUser_id", nullable = false, updatable = false) }, inverseJoinColumns = {

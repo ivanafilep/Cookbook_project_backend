@@ -30,6 +30,7 @@ public class MyCookBook {
 	@OneToOne(mappedBy = "myCookBook", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private RegularUser regularUser;
 
+	//onetomany
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinTable(name = "MyCookBook_Recipes", joinColumns = {
 			@JoinColumn(name = "MyCookBook_id", nullable = false, updatable = false) }, inverseJoinColumns = {

@@ -36,6 +36,7 @@ public class RecipeServiceImpl implements RecipeService {
 			return new ResponseEntity<>(ErrorMessageHelper.createErrorMessage(result), HttpStatus.BAD_REQUEST);
 		}
 
+		// TODO if for chef
 		Recipe existingRecipe = recipeRepository.findByName(newRecipe.getName());
 		logger.info("Checking whether theres an existing recipe in the database");
 
@@ -53,7 +54,7 @@ public class RecipeServiceImpl implements RecipeService {
 		recipe.setAmount(newRecipe.getAmount());
 		recipe.setPicture(newRecipe.getPicture());
 		// TODO for chef get TOKEN
-		// TODO get Ingredients
+		// TODO get Ingredients (id)
 
 //		Ingredients ingredient = ingredientsRepository.findByName(newRecipe.getIngredients());
 //		if(recipeIngredients.isEmpty()){
