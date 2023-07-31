@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -49,13 +51,19 @@ public class Recipe {
 	@JoinColumn(name = "chef")
 	private Chef chef;
 
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "myCookBook")
-	private MyCookBook myCookBook;
-	
-	
-	@OneToMany(mappedBy = "recipe", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	public List<RecipeIngredient> recipeIngredients;
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	@JoinTable(name = "RecipeIngredient", joinColumns = {
+			@JoinColumn(name = "Recipe_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+					@JoinColumn(name = "Ingredients_id", nullable = false, updatable = false) })
+
+	public List<Ingredients> ingredients;
+
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinTable(name = "MyCookBook_Recipes", joinColumns = {
+			@JoinColumn(name = "Recipes_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+					@JoinColumn(name = "MyCookBook_id", nullable = false, updatable = false) })
+
+	public List<MyCookBook> myCookBook;
 
 	public Recipe() {
 	}
@@ -64,7 +72,7 @@ public class Recipe {
 			@NotNull(message = "Steps must be included.") String steps,
 			@NotNull(message = "Time must be included.") Integer time,
 			@NotNull(message = "Amount must be included.") Integer amount, String picture, Chef chef,
-			MyCookBook myCookBook, List<RecipeIngredient> recipeIngredients) {
+			List<Ingredients> ingredients, List<MyCookBook> myCookBook) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -73,8 +81,8 @@ public class Recipe {
 		this.amount = amount;
 		this.picture = picture;
 		this.chef = chef;
+		this.ingredients = ingredients;
 		this.myCookBook = myCookBook;
-		this.recipeIngredients = recipeIngredients;
 	}
 
 	public Integer getId() {
@@ -133,20 +141,20 @@ public class Recipe {
 		this.chef = chef;
 	}
 
-	public MyCookBook getMyCookBook() {
+	public List<MyCookBook> getMyCookBook() {
 		return myCookBook;
 	}
 
-	public void setMyCookBook(MyCookBook myCookBook) {
+	public void setMyCookBook(List<MyCookBook> myCookBook) {
 		this.myCookBook = myCookBook;
 	}
 
-	public List<RecipeIngredient> getRecipeIngredients() {
-		return recipeIngredients;
+	public List<Ingredients> getIngredients() {
+		return ingredients;
 	}
 
-	public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
-		this.recipeIngredients = recipeIngredients;
+	public void setIngredients(List<Ingredients> ingredients) {
+		this.ingredients = ingredients;
 	}
 
 }

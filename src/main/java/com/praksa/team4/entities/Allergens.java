@@ -9,6 +9,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -31,27 +34,31 @@ public class Allergens {
 	@Column
 	@NotNull(message = "Icon must be included.")
 	public String icon;
-	
+
 	// TODO static folder urls
 
 	@OneToMany(mappedBy = "allergen", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	public List<Ingredients> ingredient;
 
-	@OneToMany(mappedBy = "regularUser", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	private List<RegularUserAllergens> regularUserAllergens;
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinTable(name = "RegularUserAllergens", joinColumns = {
+			@JoinColumn(name = "Allergens_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+					@JoinColumn(name = "RegularUser_id", nullable = false, updatable = false) })
+
+	public List<RegularUser> regularUsers;
 
 	public Allergens() {
 	}
 
 	public Allergens(Integer id, @NotNull(message = "Name must be included.") String name,
 			@NotNull(message = "Icon must be included.") String icon, List<Ingredients> ingredient,
-			List<RegularUserAllergens> regularUserAllergens) {
+			List<RegularUser> regularUsers) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
 		this.ingredient = ingredient;
-		this.regularUserAllergens = regularUserAllergens;
+		this.regularUsers = regularUsers;
 	}
 
 	public Integer getId() {
@@ -86,12 +93,12 @@ public class Allergens {
 		this.ingredient = ingredient;
 	}
 
-	public List<RegularUserAllergens> getRegularUserAllergens() {
-		return regularUserAllergens;
+	public List<RegularUser> getRegularUsers() {
+		return regularUsers;
 	}
 
-	public void setRegularUser(List<RegularUserAllergens> regularUserAllergens) {
-		this.regularUserAllergens = regularUserAllergens;
+	public void setRegularUsers(List<RegularUser> regularUsers) {
+		this.regularUsers = regularUsers;
 	}
 
 }

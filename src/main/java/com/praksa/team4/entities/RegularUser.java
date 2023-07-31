@@ -7,6 +7,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -21,19 +23,22 @@ public class RegularUser extends UserEntity {
 	@OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "myCookBook")
 	private MyCookBook myCookBook;
-	
-	@OneToMany(mappedBy = "regularUser", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	private List<RegularUserAllergens> myAllergens = new ArrayList<RegularUserAllergens>();
+
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinTable(name = "RegularUserAllergens", joinColumns = {
+			@JoinColumn(name = "RegularUser_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+					@JoinColumn(name = "Allergens_id", nullable = false, updatable = false) })
+
+	private List<Allergens> allergens;
 
 	public RegularUser() {
 		super();
 	}
 
-	public RegularUser(Integer id, String username, String password, String name, String lastname, String email,
-			String role, Integer version, MyCookBook myCookBook, List<RegularUserAllergens> myAllergens) {
-		super(id, username, password, name, lastname, email, role, version);
+	public RegularUser(MyCookBook myCookBook, List<Allergens> allergens) {
+		super();
 		this.myCookBook = myCookBook;
-		this.myAllergens = myAllergens;
+		this.allergens = allergens;
 	}
 
 	public MyCookBook getMyCookBook() {
@@ -44,12 +49,12 @@ public class RegularUser extends UserEntity {
 		this.myCookBook = myCookBook;
 	}
 
-	public List<RegularUserAllergens> getMyAllergens() {
-		return myAllergens;
+	public List<Allergens> getAllergens() {
+		return allergens;
 	}
 
-	public void setMyAllergens(List<RegularUserAllergens> myAllergens) {
-		this.myAllergens = myAllergens;
+	public void setAllergens(List<Allergens> allergens) {
+		this.allergens = allergens;
 	}
 
 }

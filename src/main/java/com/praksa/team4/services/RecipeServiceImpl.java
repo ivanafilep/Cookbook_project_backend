@@ -1,5 +1,7 @@
 package com.praksa.team4.services;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import com.praksa.team4.entities.Ingredients;
 import com.praksa.team4.entities.Recipe;
 import com.praksa.team4.entities.dto.RecipeDTO;
+import com.praksa.team4.repositories.IngredientsRepository;
 import com.praksa.team4.repositories.RecipeRepository;
 import com.praksa.team4.util.ErrorMessageHelper;
 import com.praksa.team4.util.RESTError;
@@ -19,6 +23,9 @@ public class RecipeServiceImpl implements RecipeService {
 
 	@Autowired
 	private RecipeRepository recipeRepository;
+	
+	@Autowired
+	private IngredientsRepository ingredientsRepository;
 
 	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
@@ -47,7 +54,20 @@ public class RecipeServiceImpl implements RecipeService {
 		recipe.setPicture(newRecipe.getPicture());
 		// TODO for chef get TOKEN
 		// TODO get Ingredients
-
+		
+		
+//		Ingredients ingredient = ingredientsRepository.findByName(newRecipe.getIngredients());
+//		if(recipeIngredients.isEmpty()){
+//			//RecipeIngredient ri = new RecipeIngredient();
+//			Ingredients ingredient = new Ingredients();
+//			ingredient.setRecipeIngredient(newRecipe.getRecipeIngredients());
+//			genreRepository.save(g);
+//			b.setGenre(g);
+//		}else {
+//			b.setGenre(lg.get(0));
+//		}
+		
+		
 		recipeRepository.save(recipe);
 		logger.info("Saving recipe to the database");
 
