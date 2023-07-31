@@ -29,23 +29,23 @@ public class Allergens {
 
 	@Column
 	@NotNull(message = "Name must be included.")
-	public String name;
+	private String name;
 
 	@Column
 	@NotNull(message = "Icon must be included.")
-	public String icon;
+	private String icon;
 
 	// TODO static folder urls
 
 	@OneToMany(mappedBy = "allergen", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	public List<Ingredients> ingredient;
+	private List<Ingredients> ingredient;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinTable(name = "RegularUserAllergens", joinColumns = {
 			@JoinColumn(name = "Allergens_id", nullable = false, updatable = false) }, inverseJoinColumns = {
 					@JoinColumn(name = "RegularUser_id", nullable = false, updatable = false) })
 
-	public List<RegularUser> regularUsers;
+	private List<RegularUser> regularUsers;
 
 	public Allergens() {
 	}

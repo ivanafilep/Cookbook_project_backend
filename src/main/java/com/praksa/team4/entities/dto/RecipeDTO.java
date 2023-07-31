@@ -11,7 +11,7 @@ import com.praksa.team4.entities.MyCookBook;
 public class RecipeDTO {
 
 	@NotNull(message = "Name must be included.")
-	private String name;
+	public String name;
 
 	@NotNull(message = "Steps must be included.")
 	public String steps;
@@ -28,7 +28,7 @@ public class RecipeDTO {
 
 	public List<Ingredients> ingredients;
 
-	private MyCookBook myCookBookId;
+	public List<MyCookBook> myCookBook;
 
 	public RecipeDTO() {
 		super();
@@ -38,7 +38,7 @@ public class RecipeDTO {
 			@NotNull(message = "Steps must be included.") String steps,
 			@NotNull(message = "Time must be included.") Integer time,
 			@NotNull(message = "Amount must be included.") Integer amount, String picture, Chef chefId,
-			List<Ingredients> ingredients, MyCookBook myCookBookId) {
+			List<Ingredients> ingredients, List<MyCookBook> myCookBook) {
 		super();
 		this.name = name;
 		this.steps = steps;
@@ -47,7 +47,7 @@ public class RecipeDTO {
 		this.picture = picture;
 		this.chefId = chefId;
 		this.ingredients = ingredients;
-		this.myCookBookId = myCookBookId;
+		this.myCookBook = myCookBook;
 	}
 
 	public String getName() {
@@ -98,12 +98,12 @@ public class RecipeDTO {
 		this.chefId = chefId;
 	}
 
-	public MyCookBook getMyCookBookId() {
-		return myCookBookId;
+	public List<MyCookBook> getMyCookBook() {
+		return myCookBook;
 	}
 
-	public void setMyCookBookId(MyCookBook myCookBookId) {
-		this.myCookBookId = myCookBookId;
+	public void setMyCookBook(List<MyCookBook> myCookBook) {
+		this.myCookBook = myCookBook;
 	}
 
 	public List<Ingredients> getIngredients() {
