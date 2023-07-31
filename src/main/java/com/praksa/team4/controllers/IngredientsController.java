@@ -99,9 +99,8 @@ public class IngredientsController {
 
 		for (Recipe recipe : ingredient.get().getRecipes()) {
 			ingredient.get().getRecipes().remove(recipe);
-			recipeRepository.save(recipe);
-
 		}
+		
 		ingredientsRepository.delete(ingredient.get());
 		return new ResponseEntity<>("Ingredient '" + ingredient.get().name + "' has been deleted successfully.",
 				HttpStatus.OK);
