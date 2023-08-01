@@ -40,20 +40,18 @@ public class Allergens {
 	@OneToMany(mappedBy = "allergen", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private List<Ingredients> ingredient;
 
-	@JsonIgnore
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "regularUsers")
-	private RegularUser regularUsers;
+//	@JsonIgnore
+//	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+//	@JoinColumn(name = "regularUsers")
+//	private RegularUser regularUsers;
 
 	public Allergens(Integer id, @NotNull(message = "Name must be included.") String name,
-			@NotNull(message = "Icon must be included.") String icon, List<Ingredients> ingredient,
-			RegularUser regularUsers) {
+			@NotNull(message = "Icon must be included.") String icon, List<Ingredients> ingredient) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
 		this.ingredient = ingredient;
-		this.regularUsers = regularUsers;
 	}
 
 	public Allergens() {
@@ -89,13 +87,5 @@ public class Allergens {
 
 	public void setIngredient(List<Ingredients> ingredient) {
 		this.ingredient = ingredient;
-	}
-
-	public RegularUser getRegularUsers() {
-		return regularUsers;
-	}
-
-	public void setRegularUsers(RegularUser regularUsers) {
-		this.regularUsers = regularUsers;
 	}
 }
