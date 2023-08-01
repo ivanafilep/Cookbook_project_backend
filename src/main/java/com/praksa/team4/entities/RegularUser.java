@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -22,14 +22,10 @@ public class RegularUser extends UserEntity {
 	@JoinColumn(name = "myCookBook")
 	private MyCookBook myCookBook;
 
-	
-	@OneToMany
-    @JoinTable(
-        name = "user_allergen",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "allergen_id")
-    )
-	//@OneToMany(mappedBy = "regularUsers", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinTable(name = "RegularUserAllergens", joinColumns = {
+			@JoinColumn(name = "RegularUser_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+					@JoinColumn(name = "Allergens_id", nullable = false, updatable = false) })
 	private List<Allergens> allergens;
 
 	public RegularUser() {

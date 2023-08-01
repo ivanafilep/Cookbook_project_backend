@@ -88,8 +88,8 @@ public class RegularUserController {
 		Allergens allergen = allergensRepository.findById(allergen_id).get();
 
 		regularUser.getAllergens().add(allergen);
-		//allergen.setRegularUsers(regularUser);
-		//allergensRepository.save(allergen);
+
+		// TODO do not duplicate allergen
 
 		regularUserRepository.save(regularUser);
 
@@ -102,10 +102,7 @@ public class RegularUserController {
 		RegularUser regularUser = regularUserRepository.findById(regularuser_id).get();
 		Allergens allergen = allergensRepository.findById(allergen_id).get();
 
-		//allergen.setRegularUsers(null);
 		regularUser.getAllergens().remove(allergen);
-		// allergen.setRegularUsers(regularUser);
-		// allergensRepository.save(allergen);
 
 		regularUserRepository.save(regularUser);
 

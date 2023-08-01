@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.praksa.team4.entities.MyCookBook;
 import com.praksa.team4.entities.Recipe;
-import com.praksa.team4.entities.RegularUser;
 import com.praksa.team4.repositories.CookBookRepository;
 import com.praksa.team4.repositories.RecipeRepository;
 
@@ -52,10 +51,12 @@ public class MyCookBookController {
 		Recipe recipe = recipeRepository.findById(recipe_id).get();
 
 		myCookBook.getRecipes().add(recipe);
-		recipe.setMyCookBook(myCookBook);
+		recipe.getMyCookBook().add(myCookBook);
 		recipeRepository.save(recipe);
 
 		cookBookRepository.save(myCookBook);
+
+		// TODO do not duplicate recipe
 
 		return new ResponseEntity<>(myCookBook, HttpStatus.CREATED);
 	}
@@ -65,7 +66,6 @@ public class MyCookBookController {
 		MyCookBook myCookBook = cookBookRepository.findById(cookbook_id).get();
 		Recipe recipe = recipeRepository.findById(recipe_id).get();
 
-		recipe.setMyCookBook(null);
 		myCookBook.getRecipes().remove(recipe);
 		cookBookRepository.save(myCookBook);
 
