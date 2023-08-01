@@ -10,7 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -37,21 +38,27 @@ public class Allergens {
 
 	// TODO static folder urls
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "allergen", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private List<Ingredients> ingredient;
 
-//	@JsonIgnore
-//	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-//	@JoinColumn(name = "regularUsers")
-//	private RegularUser regularUsers;
+	@JsonIgnore
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinTable(name = "RegularUserAllergens", joinColumns = {
+			@JoinColumn(name = "Allergens_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+					@JoinColumn(name = "RegularUser_id", nullable = false, updatable = false) })
+
+	private List<RegularUser> regularUsers;
 
 	public Allergens(Integer id, @NotNull(message = "Name must be included.") String name,
-			@NotNull(message = "Icon must be included.") String icon, List<Ingredients> ingredient) {
+			@NotNull(message = "Icon must be included.") String icon, List<Ingredients> ingredient,
+			List<RegularUser> regularUsers) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
 		this.ingredient = ingredient;
+		this.regularUsers = regularUsers;
 	}
 
 	public Allergens() {
@@ -87,5 +94,13 @@ public class Allergens {
 
 	public void setIngredient(List<Ingredients> ingredient) {
 		this.ingredient = ingredient;
+	}
+
+	public List<RegularUser> getRegularUsers() {
+		return regularUsers;
+	}
+
+	public void setRegularUsers(List<RegularUser> regularUsers) {
+		this.regularUsers = regularUsers;
 	}
 }

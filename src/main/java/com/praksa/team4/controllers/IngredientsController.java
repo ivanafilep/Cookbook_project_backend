@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.praksa.team4.entities.Allergens;
 import com.praksa.team4.entities.Ingredients;
 import com.praksa.team4.entities.dto.IngredientsDTO;
+import com.praksa.team4.repositories.AllergensRepository;
 import com.praksa.team4.repositories.IngredientsRepository;
 import com.praksa.team4.repositories.RecipeRepository;
 
@@ -27,6 +29,9 @@ public class IngredientsController {
 
 	@Autowired
 	private RecipeRepository recipeRepository;
+
+	@Autowired
+	private AllergensRepository allergensRepository;
 
 //  TODO CEKAMO ODGOVOR : Pretraga svih sastojaka integrisana u pisanje recepta.
 
@@ -66,6 +71,30 @@ public class IngredientsController {
 		return new ResponseEntity<>(ingredient, HttpStatus.CREATED);
 	}
 
+	@RequestMapping(method = RequestMethod.PUT, path = "ingredient_id/{ingredient_id}/allergen_id/{allergen_id}")
+	public ResponseEntity<?> addAllergenToIngredient(@PathVariable Integer ingredient_id,
+			@PathVariable Integer allergen_id) {
+		Ingredients ingredient = ingredientsRepository.findById(ingredient_id).get();
+		Allergens allergen = allergensRepository.findById(allergen_id).get();
+
+		ingredient.setAllergen(allergen);
+
+		ingredientsRepository.save(ingredient);
+
+		return new ResponseEntity<>(ingredient, HttpStatus.CREATED);
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, path = "ingredient_id/{ingredient_id}")
+	public ResponseEntity<?> deleteAllergenToIngredient(@PathVariable Integer ingredient_id) {
+		Ingredients ingredient = ingredientsRepository.findById(ingredient_id).get();
+
+		ingredient.setAllergen(null);
+
+		ingredientsRepository.save(ingredient);
+
+		return new ResponseEntity<>(ingredient, HttpStatus.CREATED);
+	}
+
 	@RequestMapping(method = RequestMethod.PUT, path = "/{id}")
 	public ResponseEntity<?> updateIngredient(@PathVariable Integer id, @RequestBody IngredientsDTO updatedIngredient) {
 		Ingredients ingredient = ingredientsRepository.findById(id).get();
@@ -95,8 +124,6 @@ public class IngredientsController {
 		if (ingredient == null) {
 			return new ResponseEntity<>("No ingredient found with ID " + ingredient_id, HttpStatus.NOT_FOUND);
 		}
-
-		ingredient.get().setRecipe(null);
 
 		ingredientsRepository.delete(ingredient.get());
 		return new ResponseEntity<>("Ingredient '" + ingredient.get().name + "' has been deleted successfully.",

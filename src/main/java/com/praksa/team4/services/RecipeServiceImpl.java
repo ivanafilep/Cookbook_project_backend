@@ -1,5 +1,6 @@
 package com.praksa.team4.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -54,18 +55,12 @@ public class RecipeServiceImpl implements RecipeService {
 		recipe.setAmount(newRecipe.getAmount());
 		recipe.setPicture(newRecipe.getPicture());
 		// TODO for chef get TOKEN
-		// TODO get Ingredients (id)
-
-//		Ingredients ingredient = ingredientsRepository.findByName(newRecipe.getIngredients());
-//		if(recipeIngredients.isEmpty()){
-//			//RecipeIngredient ri = new RecipeIngredient();
-//			Ingredients ingredient = new Ingredients();
-//			ingredient.setRecipeIngredient(newRecipe.getRecipeIngredients());
-//			genreRepository.save(g);
-//			b.setGenre(g);
-//		}else {
-//			b.setGenre(lg.get(0));
-//		}
+		List<Ingredients> listIngredients = new ArrayList<>();
+		for (Ingredients ingredients : newRecipe.getIngredients()) {
+			Ingredients newIngredients = ingredientsRepository.findById(ingredients.getId()).get();
+			listIngredients.add(newIngredients);
+		}
+		recipe.setIngredients(listIngredients);
 
 		recipeRepository.save(recipe);
 		logger.info("Saving recipe to the database");
