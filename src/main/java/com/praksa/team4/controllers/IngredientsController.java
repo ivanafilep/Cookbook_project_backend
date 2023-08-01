@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.praksa.team4.entities.Ingredients;
-import com.praksa.team4.entities.Recipe;
 import com.praksa.team4.entities.dto.IngredientsDTO;
 import com.praksa.team4.repositories.IngredientsRepository;
 import com.praksa.team4.repositories.RecipeRepository;
@@ -97,9 +96,7 @@ public class IngredientsController {
 			return new ResponseEntity<>("No ingredient found with ID " + ingredient_id, HttpStatus.NOT_FOUND);
 		}
 
-		for (Recipe recipe : ingredient.get().getRecipes()) {
-			ingredient.get().getRecipes().remove(recipe);
-		}
+		ingredient.get().setRecipe(null);
 
 		ingredientsRepository.delete(ingredient.get());
 		return new ResponseEntity<>("Ingredient '" + ingredient.get().name + "' has been deleted successfully.",

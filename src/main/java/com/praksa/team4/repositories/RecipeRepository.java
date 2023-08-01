@@ -8,7 +8,6 @@ import com.praksa.team4.entities.RegularUser;
 
 public interface RecipeRepository extends CrudRepository<Recipe, Integer> {
 
-	//Optional<Recipe> findByName(String name);
 	Recipe findByName(String name);
 
 	RegularUser findByMyCookBook(MyCookBook myCookBook);

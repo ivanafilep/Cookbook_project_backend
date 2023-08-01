@@ -8,9 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -30,12 +28,7 @@ public class MyCookBook {
 	@OneToOne(mappedBy = "myCookBook", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private RegularUser regularUser;
 
-	//onetomany
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinTable(name = "MyCookBook_Recipes", joinColumns = {
-			@JoinColumn(name = "MyCookBook_id", nullable = false, updatable = false) }, inverseJoinColumns = {
-					@JoinColumn(name = "Recipes_id", nullable = false, updatable = false) })
-
+	@OneToMany(mappedBy = "myCookBook", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	private List<Recipe> recipes;
 
 	public MyCookBook() {

@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.praksa.team4.entities.Allergens;
 import com.praksa.team4.entities.MyCookBook;
+import com.praksa.team4.entities.Recipe;
 import com.praksa.team4.entities.RegularUser;
 import com.praksa.team4.entities.dto.UserDTO;
+import com.praksa.team4.repositories.AllergensRepository;
 import com.praksa.team4.repositories.CookBookRepository;
 import com.praksa.team4.repositories.RegularUserRepository;
 
@@ -31,6 +34,9 @@ public class RegularUserController {
 
 	@Autowired
 	private CookBookRepository cookBookRepository;
+
+	@Autowired
+	AllergensRepository allergensRepository;
 
 	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
@@ -73,6 +79,37 @@ public class RegularUserController {
 		regularUser.setPassword(updatedRegularUser.getPassword());
 		regularUserRepository.save(regularUser);
 		return new ResponseEntity<>(regularUser, HttpStatus.OK);
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, path = "regularuser_id/{regularuser_id}/allergen_id/{allergen_id}")
+	public ResponseEntity<?> addAllergenToRegularUser(@PathVariable Integer regularuser_id,
+			@PathVariable Integer allergen_id) {
+		RegularUser regularUser = regularUserRepository.findById(regularuser_id).get();
+		Allergens allergen = allergensRepository.findById(allergen_id).get();
+
+		regularUser.getAllergens().add(allergen);
+		allergen.setRegularUsers(regularUser);
+		allergensRepository.save(allergen);
+
+		regularUserRepository.save(regularUser);
+
+		return new ResponseEntity<>(regularUser, HttpStatus.CREATED);
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, path = "delete/regularuser_id/{regularuser_id}/allergen_id/{allergen_id}")
+	public ResponseEntity<?> deleteAllergenFromRegularUser(@PathVariable Integer regularuser_id,
+			@PathVariable Integer allergen_id) {
+		RegularUser regularUser = regularUserRepository.findById(regularuser_id).get();
+		Allergens allergen = allergensRepository.findById(allergen_id).get();
+
+		allergen.setRegularUsers(null);
+		regularUser.getAllergens().remove(allergen);
+		// allergen.setRegularUsers(regularUser);
+		// allergensRepository.save(allergen);
+
+		regularUserRepository.save(regularUser);
+
+		return new ResponseEntity<>(regularUser, HttpStatus.CREATED);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")

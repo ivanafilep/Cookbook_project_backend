@@ -8,8 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -56,11 +54,8 @@ public class Ingredients {
 	@JoinColumn(name = "allergen")
 	public Allergens allergen;
 
-	// manytoone
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinTable(name = "RecipeIngredient", joinColumns = {
-			@JoinColumn(name = "Ingredients_id", nullable = false, updatable = false) }, inverseJoinColumns = {
-					@JoinColumn(name = "Recipe_id", nullable = false, updatable = false) })
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@JoinColumn(name = "recipe")
 	public Recipe recipe;
 
 	public Ingredients() {
