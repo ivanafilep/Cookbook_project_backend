@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,11 +36,13 @@ public class IngredientsController {
 
 //  TODO CEKAMO ODGOVOR : Pretraga svih sastojaka integrisana u pisanje recepta.
 
+	@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAll() {
 		return new ResponseEntity<Iterable<Ingredients>>(ingredientsRepository.findAll(), HttpStatus.OK);
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(method = RequestMethod.GET, path = "/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id) {
 		Optional<Ingredients> ingredient = ingredientsRepository.findById(id);
@@ -51,6 +54,7 @@ public class IngredientsController {
 		}
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addNewIngredient(@Valid @RequestBody IngredientsDTO newIngredient) {
 		Ingredients ingredient = new Ingredients();
@@ -71,6 +75,7 @@ public class IngredientsController {
 		return new ResponseEntity<>(ingredient, HttpStatus.CREATED);
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(method = RequestMethod.PUT, path = "ingredient_id/{ingredient_id}/allergen_id/{allergen_id}")
 	public ResponseEntity<?> addAllergenToIngredient(@PathVariable Integer ingredient_id,
 			@PathVariable Integer allergen_id) {
@@ -84,6 +89,7 @@ public class IngredientsController {
 		return new ResponseEntity<>(ingredient, HttpStatus.CREATED);
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(method = RequestMethod.PUT, path = "ingredient_id/{ingredient_id}")
 	public ResponseEntity<?> deleteAllergenToIngredient(@PathVariable Integer ingredient_id) {
 		Ingredients ingredient = ingredientsRepository.findById(ingredient_id).get();
@@ -95,6 +101,7 @@ public class IngredientsController {
 		return new ResponseEntity<>(ingredient, HttpStatus.CREATED);
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(method = RequestMethod.PUT, path = "/{id}")
 	public ResponseEntity<?> updateIngredient(@PathVariable Integer id, @RequestBody IngredientsDTO updatedIngredient) {
 		Ingredients ingredient = ingredientsRepository.findById(id).get();
@@ -117,6 +124,7 @@ public class IngredientsController {
 		return new ResponseEntity<>(ingredient, HttpStatus.OK);
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{ingredient_id}")
 	public ResponseEntity<?> deleteIngredient(@PathVariable Integer ingredient_id) {
 		Optional<Ingredients> ingredient = ingredientsRepository.findById(ingredient_id);
