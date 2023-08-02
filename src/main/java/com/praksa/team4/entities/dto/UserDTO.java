@@ -16,6 +16,8 @@ public class UserDTO {
 // 	@NotNull(message = "Password must be specified")
 //	@Size(min = 8, max = 100, message = "Password must be between {min} and {max} characters long.")
 	private String password;
+	
+	private String confirmed_password;
 
 	@NotNull(message = "Name must be included.")
 	@Size(min = 2, max = 30, message = "Name must be between {min} and {max} characters long.")
@@ -38,7 +40,7 @@ public class UserDTO {
 
 	public UserDTO(
 			@NotNull(message = "Username must be specified") @Size(min = 2, max = 30, message = "User name must be between {min} and {max} characters long.") String username,
-			String password,
+			String password, String confirmed_password,
 			@NotNull(message = "Name must be included.") @Size(min = 2, max = 30, message = "Name must be between {min} and {max} characters long.") String name,
 			@NotNull(message = "Lastname must be included.") @Size(min = 2, max = 30, message = "Lastname must be between {min} and {max} characters long.") String lastname,
 			@NotNull(message = "Email must be included.") @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.") String email,
@@ -46,6 +48,7 @@ public class UserDTO {
 		super();
 		this.username = username;
 		this.password = password;
+		this.confirmed_password = confirmed_password;
 		this.name = name;
 		this.lastname = lastname;
 		this.email = email;
@@ -98,5 +101,13 @@ public class UserDTO {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public String getConfirmed_password() {
+		return confirmed_password;
+	}
+
+	public void setConfirmed_password(String confirmed_password) {
+		this.confirmed_password = confirmed_password;
 	}
 }
