@@ -6,4 +6,6 @@ import com.praksa.team4.entities.UserEntity;
 
 public interface UserRepository extends CrudRepository<UserEntity, Integer> {
 
+	UserEntity findByEmail(String email);
+
 }

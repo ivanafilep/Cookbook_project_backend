@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import com.praksa.team4.entities.dto.UserDTO;
 import com.praksa.team4.repositories.ChefRepository;
 
 @RestController
+@Secured("ROLE_ADMIN")
 @RequestMapping(path = "project/chef")
 public class ChefController {
 
