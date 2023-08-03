@@ -143,8 +143,7 @@ public class ChefController {
 		return new ResponseEntity<RESTError>(new RESTError(2, "Not authorized to update chef"),
 				HttpStatus.UNAUTHORIZED);
 	}
-
-	// TODO delete also Recipe
+	
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
 	public ResponseEntity<?> deleteChef(@PathVariable Integer id) {
