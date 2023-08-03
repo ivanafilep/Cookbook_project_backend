@@ -1,13 +1,17 @@
 package com.praksa.team4.controllers;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +27,7 @@ import com.praksa.team4.entities.dto.RecipeDTO;
 import com.praksa.team4.repositories.IngredientsRepository;
 import com.praksa.team4.repositories.RecipeRepository;
 import com.praksa.team4.services.RecipeServiceImpl;
+import com.praksa.team4.util.RESTError;
 
 @RestController
 @RequestMapping(path = "project/recipe")
@@ -37,19 +42,31 @@ public class RecipeController {
 
 	@Autowired
 	private RecipeServiceImpl recipeServiceImpl;
+	
+	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+
 
 	// nema secured jer svi mogu da vide sve recepate
 	
 	@RequestMapping(method = RequestMethod.GET)
 	private ResponseEntity<?> getAllRecipes() {
-		Iterable<Recipe> recipes = (Iterable<Recipe>) recipeRepository.findAll();
+		List<Recipe> recipes = (List<Recipe>) recipeRepository.findAll();
+		
+		if (recipes.isEmpty()) {
+	        logger.error("No recipes found in the database.");
+			return new ResponseEntity<RESTError>(new RESTError(1, "No recipes found"), HttpStatus.NOT_FOUND);
+		} else {
+	        logger.info("Found recipes in the database");
+		
 		return new ResponseEntity<>(recipes, HttpStatus.OK);
+		}
 	}
 
 	@Secured({ "ROLE_ADMIN", "ROLE_CHEF"})
 	@RequestMapping(method = RequestMethod.POST, value = "/newRecipe")
-	public ResponseEntity<?> createRecipe(@Valid @RequestBody RecipeDTO newRecipe, BindingResult result) {
-		return recipeServiceImpl.createRecipe(newRecipe, result);
+	public ResponseEntity<?> createRecipe(@Valid @RequestBody RecipeDTO newRecipe, BindingResult result,
+			Authentication authentication) {
+		return recipeServiceImpl.createRecipe(newRecipe, result, authentication);
 	}
 
 	@Secured({ "ROLE_ADMIN", "ROLE_CHEF"})

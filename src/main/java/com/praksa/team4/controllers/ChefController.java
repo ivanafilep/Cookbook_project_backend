@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,9 @@ import com.praksa.team4.entities.UserEntity;
 import com.praksa.team4.entities.dto.UserDTO;
 import com.praksa.team4.repositories.ChefRepository;
 import com.praksa.team4.repositories.UserRepository;
+import com.praksa.team4.util.ErrorMessageHelper;
 import com.praksa.team4.util.RESTError;
+import com.praksa.team4.util.UserCustomValidator;
 
 @RestController
 @Secured("ROLE_ADMIN")
@@ -34,6 +37,9 @@ public class ChefController {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	UserCustomValidator userValidator;
 
 	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
@@ -46,7 +52,36 @@ public class ChefController {
 
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Chef> addNewChef(@Valid @RequestBody UserDTO chef) {
+	public ResponseEntity<?> addNewChef(@Valid @RequestBody UserDTO chef, BindingResult result) {
+		
+		if (result.hasErrors()) {
+	        logger.error("Sent incorrect parameters.");
+			return new ResponseEntity<>(ErrorMessageHelper.createErrorMessage(result), HttpStatus.BAD_REQUEST);
+		} else {
+	        logger.info("Validating if the users password matches the confirming password");
+			userValidator.validate(chef, result);
+			if (result.hasErrors()) {
+		        logger.error("Validation errors detected.");
+		        return new ResponseEntity<>(result.getFieldError(), HttpStatus.BAD_REQUEST);
+		    }
+		}
+
+		UserEntity existingUserWithEmail = userRepository.findByEmail(chef.getEmail());
+        logger.info("Finding out whether there's a user with the same email.");
+        
+		UserEntity existingUserWithUsername = userRepository.findByUsername(chef.getUsername());
+        logger.info("Finding out whether there's a user with the same username.");
+
+		if (existingUserWithEmail != null) {
+	        logger.error("There is a user with the same email.");
+			return new ResponseEntity<RESTError>(new RESTError(1, "Email already exists"), HttpStatus.CONFLICT);
+		}
+
+		if (existingUserWithUsername != null) {
+	        logger.error("There is a user with the same username.");
+			return new ResponseEntity<RESTError>(new RESTError(2, "Username already exists"), HttpStatus.CONFLICT);
+		}
+	
 		Chef newChef = new Chef();
 
 		newChef.setUsername(chef.getUsername());
@@ -55,8 +90,11 @@ public class ChefController {
 		newChef.setLastname(chef.getLastname());
 		newChef.setEmail(chef.getEmail());
 		newChef.setRole("ROLE_CHEF");
+		logger.info("Setting chef role.");
 
 		chefRepository.save(newChef);
+		logger.info("Saving chef to the database");
+		
 		return new ResponseEntity<>(newChef, HttpStatus.CREATED);
 	}
 
@@ -106,6 +144,7 @@ public class ChefController {
 				HttpStatus.UNAUTHORIZED);
 	}
 
+	// TODO delete also Recipe
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
 	public ResponseEntity<?> deleteChef(@PathVariable Integer id) {
