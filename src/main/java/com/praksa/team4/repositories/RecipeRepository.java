@@ -10,6 +10,4 @@ public interface RecipeRepository extends CrudRepository<Recipe, Integer> {
 
 	Recipe findByName(String name);
 
-	RegularUser findByMyCookBook(MyCookBook myCookBook);
-
 }

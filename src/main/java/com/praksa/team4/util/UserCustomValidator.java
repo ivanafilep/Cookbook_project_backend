@@ -2,12 +2,14 @@ package com.praksa.team4.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.praksa.team4.entities.dto.UserDTO;
 import com.praksa.team4.security.Views;
 
+@Component
 public class UserCustomValidator implements Validator {
 	
 	@JsonView(Views.Admin.class)

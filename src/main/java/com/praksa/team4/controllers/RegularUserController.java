@@ -207,7 +207,6 @@ public class RegularUserController {
 			logger.error("There is no regular user found with " + id);
 			return new ResponseEntity<RESTError>(new RESTError(1, "Regular User found"), HttpStatus.NOT_FOUND);
 		} else {
-			cookBookRepository.delete(regularUser.get().getMyCookBook());
 			regularUserRepository.delete(regularUser.get());
 			logger.info("Deleting regular user from the database");
 			return new ResponseEntity<>("Regular user with ID " + id + " has been successfully deleted.",

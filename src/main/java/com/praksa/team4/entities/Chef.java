@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Chef extends UserEntity {
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "chef", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "chef", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public List<Recipe> recipes;
 
 	public Chef() {

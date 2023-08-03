@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class RegularUser extends UserEntity {
 
-	@OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "myCookBook")
 	private MyCookBook myCookBook;
 
