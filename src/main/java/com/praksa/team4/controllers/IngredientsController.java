@@ -21,6 +21,7 @@ import com.praksa.team4.repositories.AllergensRepository;
 import com.praksa.team4.repositories.IngredientsRepository;
 import com.praksa.team4.repositories.RecipeRepository;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping(path = "project/ingredients")
 public class IngredientsController {
@@ -89,9 +90,8 @@ public class IngredientsController {
 		return new ResponseEntity<>(ingredient, HttpStatus.CREATED);
 	}
 
-	@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(method = RequestMethod.PUT, path = "ingredient_id/{ingredient_id}")
-	public ResponseEntity<?> deleteAllergenToIngredient(@PathVariable Integer ingredient_id) {
+	public ResponseEntity<?> deleteAllergenFromIngredient(@PathVariable Integer ingredient_id) {
 		Ingredients ingredient = ingredientsRepository.findById(ingredient_id).get();
 
 		ingredient.setAllergen(null);
