@@ -38,7 +38,7 @@ public class RecipeController {
 	@Autowired
 	private RecipeServiceImpl recipeServiceImpl;
 
-	// pregled liste svih recepata
+	// nema secured jer svi mogu da vide sve recepate
 	
 	@RequestMapping(method = RequestMethod.GET)
 	private ResponseEntity<?> getAllRecipes() {
@@ -52,14 +52,14 @@ public class RecipeController {
 		return recipeServiceImpl.createRecipe(newRecipe, result);
 	}
 
-	
+	@Secured({ "ROLE_ADMIN", "ROLE_CHEF"})
 	@RequestMapping(method = RequestMethod.PUT, value = "/updateRecipe/{id}")
 	public ResponseEntity<?> updateRecipe(@Valid @RequestBody RecipeDTO updatedRecipe, BindingResult result,
 			@PathVariable Integer id) {
 		return recipeServiceImpl.updateRecipe(updatedRecipe, result, id);
 	}
 
-	
+	@Secured({ "ROLE_ADMIN", "ROLE_CHEF"})
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
 	public ResponseEntity<?> deleteRecipe(@PathVariable Integer id) {
 		Optional<Recipe> recipe = recipeRepository.findById(id);
@@ -71,12 +71,23 @@ public class RecipeController {
 			recipe.get().getIngredients().remove(ingredient);
 			ingredientsRepository.save(ingredient);
 		}
-		// TODO delete from MyCookBook
+		
 
 		recipeRepository.delete(recipe.get());
 		return new ResponseEntity<>("Deleted successfully!", HttpStatus.OK);
 	}
+	// TODO delete from MyCookBook
+	@Secured({ "ROLE_ADMIN", "ROLE_REGULAR_USER"})
+	@RequestMapping(method = RequestMethod.PUT, path = "recipe_id/{recipe_id}")
+	public ResponseEntity<?> deleteRecipeFromCookBook(@PathVariable Integer recipe_id) {
+		Recipe recipe = recipeRepository.findById(recipe_id).get();
 
+		recipe.setMyCookBook(null);
+
+		recipeRepository.save(recipe);
+
+		return new ResponseEntity<>(recipe, HttpStatus.CREATED);
+	}
 	
 	@RequestMapping(method = RequestMethod.GET, path = "/by_name")
 	public ResponseEntity<?> getRecipeByName(@RequestParam String name) {
@@ -88,7 +99,8 @@ public class RecipeController {
 		return new ResponseEntity<>(recipe, HttpStatus.OK);
 	}
 
-	
+	// TODO ko ima pristup?
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.GET, path = "/{id}")
 	public ResponseEntity<?> getRecipeById(@PathVariable Integer id) {
 		Optional<Recipe> recipe = recipeRepository.findById(id);
