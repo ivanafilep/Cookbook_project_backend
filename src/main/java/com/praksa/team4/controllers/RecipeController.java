@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.praksa.team4.entities.Chef;
 import com.praksa.team4.entities.Ingredients;
 import com.praksa.team4.entities.Recipe;
 import com.praksa.team4.entities.dto.RecipeDTO;
+import com.praksa.team4.repositories.ChefRepository;
 import com.praksa.team4.repositories.IngredientsRepository;
 import com.praksa.team4.repositories.RecipeRepository;
 import com.praksa.team4.services.RecipeServiceImpl;
@@ -39,6 +41,9 @@ public class RecipeController {
 	
 	@Autowired
 	private IngredientsRepository ingredientsRepository;
+	
+	@Autowired
+	private ChefRepository chefRepository;
 
 	@Autowired
 	private RecipeServiceImpl recipeServiceImpl;
@@ -51,6 +56,23 @@ public class RecipeController {
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAllRecipes() {
 		List<Recipe> recipes = (List<Recipe>) recipeRepository.findAll();
+		
+		if (recipes.isEmpty()) {
+	        logger.error("No recipes found in the database.");
+			return new ResponseEntity<RESTError>(new RESTError(1, "No recipes found"), HttpStatus.NOT_FOUND);
+		} else {
+	        logger.info("Found recipes in the database");
+		
+		return new ResponseEntity<>(recipes, HttpStatus.OK);
+		
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, path="/chefRecipes/{id}")
+	public ResponseEntity<?> getAllRecipesByChef(@PathVariable Integer id) {
+		Optional<Chef> chef = chefRepository.findById(id);
+		
+		List<Recipe> recipes = (List<Recipe>) recipeRepository.findByChef(chef.get());
 		
 		if (recipes.isEmpty()) {
 	        logger.error("No recipes found in the database.");
