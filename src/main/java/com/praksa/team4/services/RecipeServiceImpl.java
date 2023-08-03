@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -30,7 +31,8 @@ public class RecipeServiceImpl implements RecipeService {
 
 	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
-	public ResponseEntity<?> createRecipe(RecipeDTO newRecipe, BindingResult result) {
+	public ResponseEntity<?> createRecipe(RecipeDTO newRecipe, BindingResult result,
+			Authentication authentication) {
 
 		if (result.hasErrors()) {
 			logger.info("Validating input parameters for recipe");
