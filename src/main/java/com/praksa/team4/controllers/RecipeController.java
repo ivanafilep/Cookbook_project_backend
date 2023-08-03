@@ -49,7 +49,7 @@ public class RecipeController {
 	// nema secured jer svi mogu da vide sve recepate
 	
 	@RequestMapping(method = RequestMethod.GET)
-	private ResponseEntity<?> getAllRecipes() {
+	public ResponseEntity<?> getAllRecipes() {
 		List<Recipe> recipes = (List<Recipe>) recipeRepository.findAll();
 		
 		if (recipes.isEmpty()) {
@@ -59,6 +59,7 @@ public class RecipeController {
 	        logger.info("Found recipes in the database");
 		
 		return new ResponseEntity<>(recipes, HttpStatus.OK);
+		
 		}
 	}
 
@@ -114,6 +115,7 @@ public class RecipeController {
 			return new ResponseEntity<>("Recipe not found!", HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(recipe, HttpStatus.OK);
+		
 	}
 
 	// TODO ko ima pristup?
