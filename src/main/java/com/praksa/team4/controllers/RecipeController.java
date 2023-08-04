@@ -101,20 +101,9 @@ public class RecipeController {
 
 	@Secured({ "ROLE_ADMIN", "ROLE_CHEF"})
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
-	public ResponseEntity<?> deleteRecipe(@PathVariable Integer id) {
-		Optional<Recipe> recipe = recipeRepository.findById(id);
-		if (recipe == null) {
-			return new ResponseEntity<>("No ingredient found with ID " + id, HttpStatus.NOT_FOUND);
-		}
-
-		for (Ingredients ingredient : recipe.get().getIngredients()) {
-			recipe.get().getIngredients().remove(ingredient);
-			ingredientsRepository.save(ingredient);
-		}
-		
-
-		recipeRepository.delete(recipe.get());
-		return new ResponseEntity<>("Deleted successfully!", HttpStatus.OK);
+	public ResponseEntity<?> deleteRecipe(@PathVariable Integer id, BindingResult result) {
+		return recipeServiceImpl.deleteRecipe(id, result);
+	
 	}
 	// TODO delete from MyCookBook
 	@Secured({ "ROLE_ADMIN", "ROLE_REGULAR_USER"})
