@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,8 +49,9 @@ public class RecipeController {
 
 	@Secured({ "ROLE_ADMIN", "ROLE_CHEF"})
 	@RequestMapping(method = RequestMethod.POST, value = "/newRecipe")
-	public ResponseEntity<?> createRecipe(@Valid @RequestBody RecipeDTO newRecipe, BindingResult result) {
-		return recipeServiceImpl.createRecipe(newRecipe, result);
+	public ResponseEntity<?> createRecipe(@Valid @RequestBody RecipeDTO newRecipe, BindingResult result,
+			Authentication authentication) {
+		return recipeServiceImpl.createRecipe(newRecipe, result, authentication);
 	}
 
 	@Secured({ "ROLE_ADMIN", "ROLE_CHEF"})
@@ -61,20 +63,9 @@ public class RecipeController {
 
 	@Secured({ "ROLE_ADMIN", "ROLE_CHEF"})
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
-	public ResponseEntity<?> deleteRecipe(@PathVariable Integer id) {
-		Optional<Recipe> recipe = recipeRepository.findById(id);
-		if (recipe == null) {
-			return new ResponseEntity<>("No ingredient found with ID " + id, HttpStatus.NOT_FOUND);
-		}
-
-		for (Ingredients ingredient : recipe.get().getIngredients()) {
-			recipe.get().getIngredients().remove(ingredient);
-			ingredientsRepository.save(ingredient);
-		}
-		
-
-		recipeRepository.delete(recipe.get());
-		return new ResponseEntity<>("Deleted successfully!", HttpStatus.OK);
+	public ResponseEntity<?> deleteRecipe(@PathVariable Integer id, BindingResult result) {
+		return recipeServiceImpl.deleteRecipe(id, result);
+	
 	}
 	// TODO delete from MyCookBook
 	@Secured({ "ROLE_ADMIN", "ROLE_REGULAR_USER"})
