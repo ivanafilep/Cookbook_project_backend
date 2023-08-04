@@ -1,6 +1,8 @@
 package com.praksa.team4.entities.dto;
 
 import java.util.List;
+
+import com.praksa.team4.entities.MyCookBook;
 import com.praksa.team4.entities.Recipe;
 import com.praksa.team4.entities.RegularUser;
 
@@ -13,10 +15,10 @@ public class MyCookBookDTO {
 	public MyCookBookDTO() {
 	}
 
-	public MyCookBookDTO(RegularUser regularUser, List<Recipe> recipes) {
+	public MyCookBookDTO(MyCookBook mcb) {
 		super();
-		this.regularUser = regularUser;
-		this.recipes = recipes;
+		this.regularUser = mcb.getRegularUser();
+		this.recipes = mcb.getRecipes();
 	}
 
 	public List<Recipe> getRecipes() {
