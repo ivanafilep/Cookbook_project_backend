@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Chef extends UserEntity {
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "chef", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "chef", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public List<Recipe> recipes;
 
 	public Chef() {
@@ -33,12 +33,8 @@ public class Chef extends UserEntity {
 			@NotNull(message = "Name must be included.") @Size(min = 2, max = 30, message = "Name must be between {min} and {max} characters long.") String name,
 			@NotNull(message = "Lastname must be included.") @Size(min = 2, max = 30, message = "Lastname must be between {min} and {max} characters long.") String lastname,
 			@NotNull(message = "Email must be included.") @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.") String email,
-			String role, Integer version) {
+			String role, Integer version, List<Recipe> recipes) {
 		super(id, username, password, name, lastname, email, role, version);
-	}
-
-	public Chef(List<Recipe> recipes) {
-		super();
 		this.recipes = recipes;
 	}
 

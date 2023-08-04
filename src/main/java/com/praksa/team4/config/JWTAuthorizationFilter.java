@@ -25,7 +25,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 	private final String PREFIX = "Bearer ";
 	
 	private SecretKey secretKey;
-	
 
 	public JWTAuthorizationFilter(SecretKey secretKey) {
 		super();

@@ -5,4 +5,6 @@ import com.praksa.team4.entities.Ingredients;
 
 public interface IngredientsRepository extends CrudRepository<Ingredients, Integer> {
 
+	Ingredients findByName(String name);
+
 }

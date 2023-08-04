@@ -42,7 +42,9 @@ public class RecipeServiceImpl implements RecipeService {
 
 	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
-	public ResponseEntity<?> createRecipe(RecipeDTO newRecipe, BindingResult result, Authentication authentication) {
+
+	public ResponseEntity<?> createRecipe(RecipeDTO newRecipe, BindingResult result,
+			Authentication authentication) {
 
 		if (result.hasErrors()) {
 			logger.error("Sent incorrect parameters.");
