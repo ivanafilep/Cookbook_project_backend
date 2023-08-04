@@ -10,7 +10,7 @@ import com.praksa.team4.entities.RegularUser;
 
 public interface RecipeRepository extends CrudRepository<Recipe, Integer> {
 
-	Recipe findByName(String name);
+	Optional<Recipe> findByName(String name);
 
 	List<Recipe> findByChef(Chef chef);
 
