@@ -40,7 +40,6 @@ public class IngredientsController {
 
 //  TODO CEKAMO ODGOVOR : Pretraga svih sastojaka integrisana u pisanje recepta.
 
-	//TODO svi bi trebali da vide - da li je to public view samo ili sta
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAll() {
 		try {
@@ -104,7 +103,8 @@ public class IngredientsController {
 		
 		// TODO resiti kako da dodajemo sastojcima alergene, kad cemo imati bazu sa
 		// sastojcima bez alergena (da ne bude rucno)
-		// ingredient.setAllergen(newIngredient.getAllergen());
+		
+		ingredient.setAllergen(newIngredient.getAllergen());
 
 		ingredientsRepository.save(ingredient);
 		logger.info("Saving ingredient to the database");
