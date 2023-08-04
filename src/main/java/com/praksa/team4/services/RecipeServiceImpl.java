@@ -42,9 +42,7 @@ public class RecipeServiceImpl implements RecipeService {
 
 	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
-
-	public ResponseEntity<?> createRecipe(RecipeDTO newRecipe, BindingResult result,
-			Authentication authentication) {
+	public ResponseEntity<?> createRecipe(RecipeDTO newRecipe, BindingResult result, Authentication authentication) {
 
 		if (result.hasErrors()) {
 			logger.error("Sent incorrect parameters.");
@@ -54,37 +52,42 @@ public class RecipeServiceImpl implements RecipeService {
 		String signedInUserEmail = authentication.getName();
 		UserEntity currentUser = userRepository.findByEmail(signedInUserEmail);
 
-		Recipe existingRecipe = recipeRepository.findByName(newRecipe.getName());
-		logger.info("Checking whether theres an existing recipe in the database");
-
-		if (existingRecipe != null) {
-			logger.error("Recipe with the same name already exists");
-			return new ResponseEntity<RESTError>(new RESTError(1, "A recipe with the same name already exists"),
-					HttpStatus.CONFLICT);
-		}
-		Recipe recipe = new Recipe();
-
-		recipe.setName(newRecipe.getName());
-		recipe.setTime(newRecipe.getTime());
-		recipe.setSteps(newRecipe.getSteps());
-		recipe.setAmount(newRecipe.getAmount());
-		recipe.setPicture(newRecipe.getPicture());
-		// TODO for chef get TOKEN
-		List<Ingredients> listIngredients = new ArrayList<>();
-		for (Ingredients ingredients : newRecipe.getIngredients()) {
-			Ingredients newIngredients = ingredientsRepository.findById(ingredients.getId()).get();
-			listIngredients.add(newIngredients);
-		}
-		recipe.setIngredients(listIngredients);
-
-		recipeRepository.save(recipe);
-		logger.info("Saving recipe to the database");
+//		Optional<Recipe> existingRecipe = recipeRepository.findByName(newRecipe.getName());
+//		logger.info("Checking whether theres an existing recipe in the database");
+//
+//		if (existingRecipe.isEmpty()) {
+//			logger.error("Recipe with the same name already exists");
+//			return new ResponseEntity<RESTError>(new RESTError(1, "A recipe with the same name already exists"),
+//					HttpStatus.CONFLICT);
+//		}
 		if (result.hasErrors()) {
 			logger.info("Validating input parameters for recipe");
 			return new ResponseEntity<>(ErrorMessageHelper.createErrorMessage(result), HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity<Recipe>(recipe, HttpStatus.CREATED);
+		if (currentUser.getRole().equals("ROLE_CHEF")) {
+
+			Recipe recipe = new Recipe();
+
+			recipe.setName(newRecipe.getName());
+			recipe.setTime(newRecipe.getTime());
+			recipe.setSteps(newRecipe.getSteps());
+			recipe.setAmount(newRecipe.getAmount());
+			recipe.setPicture(newRecipe.getPicture());
+			// TODO for chef get TOKEN
+			List<Ingredients> listIngredients = new ArrayList<>();
+			for (Ingredients ingredients : newRecipe.getIngredients()) {
+				Ingredients newIngredients = ingredientsRepository.findById(ingredients.getId()).get();
+				listIngredients.add(newIngredients);
+			}
+			recipe.setIngredients(listIngredients);
+
+			recipeRepository.save(recipe);
+			logger.info("Saving recipe to the database");
+
+			return new ResponseEntity<Recipe>(recipe, HttpStatus.CREATED);
+		}
+		return new ResponseEntity<RESTError>(new RESTError(1, "User is not authorized to create recipes."), HttpStatus.UNAUTHORIZED);
 	}
 
 	public ResponseEntity<?> updateRecipe(RecipeDTO updatedRecipe, BindingResult result, Integer id) {

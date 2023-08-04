@@ -120,7 +120,7 @@ public class RecipeController {
 	
 	@RequestMapping(method = RequestMethod.GET, path = "/by_name")
 	public ResponseEntity<?> getRecipeByName(@RequestParam String name) {
-		Recipe recipe = recipeRepository.findByName(name);
+		Optional<Recipe> recipe = recipeRepository.findByName(name);
 
 		if (recipe == null) {
 			return new ResponseEntity<>("Recipe not found!", HttpStatus.NOT_FOUND);
