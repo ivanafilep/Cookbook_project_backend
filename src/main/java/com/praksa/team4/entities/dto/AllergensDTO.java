@@ -1,6 +1,7 @@
 package com.praksa.team4.entities.dto;
 
 import javax.validation.constraints.NotNull;
+import com.praksa.team4.entities.Allergens;
 
 public class AllergensDTO {
 
@@ -14,11 +15,10 @@ public class AllergensDTO {
 		super();
 	}
 
-	public AllergensDTO(@NotNull(message = "Name must be included.") String name,
-			@NotNull(message = "Icon must be included.") String icon) {
+	public AllergensDTO(Allergens a) {
 		super();
-		this.name = name;
-		this.icon = icon;
+		this.name = a.getName();
+		this.icon = a.getIcon();
 	}
 
 	public String getName() {

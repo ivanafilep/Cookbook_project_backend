@@ -1,9 +1,8 @@
 package com.praksa.team4.entities.dto;
 
 import javax.validation.constraints.NotNull;
-
 import com.praksa.team4.entities.Allergens;
-import com.praksa.team4.entities.Recipe;
+import com.praksa.team4.entities.Ingredients;
 
 public class IngredientsDTO {
 
@@ -28,26 +27,20 @@ public class IngredientsDTO {
 
 	public Allergens allergen;
 
-	public Recipe recipe;
-
 	public IngredientsDTO() {
 	}
 
-	public IngredientsDTO(@NotNull(message = "Name must be included.") String name,
-			@NotNull(message = "Unit must be included.") String unit,
-			@NotNull(message = "Calories must be included.") Float calories, Float carbs, Float fats, Float sugars,
-			Float proteins, Float saturatedFats, Allergens allergen, Recipe recipe) {
+	public IngredientsDTO(Ingredients i) {
 		super();
-		this.name = name;
-		this.unit = unit;
-		this.calories = calories;
-		this.carbs = carbs;
-		this.fats = fats;
-		this.sugars = sugars;
-		this.proteins = proteins;
-		this.saturatedFats = saturatedFats;
-		this.allergen = allergen;
-		this.recipe = recipe;
+		this.name = i.getName();
+		this.unit = i.getUnit();
+		this.calories = i.getCalories();
+		this.carbs = i.getCarbs();
+		this.fats = i.getFats();
+		this.sugars = i.getSugars();
+		this.proteins = i.getProteins();
+		this.saturatedFats = i.getSaturatedFats();
+		this.allergen = i.getAllergen();
 	}
 
 	public String getName() {
@@ -120,14 +113,6 @@ public class IngredientsDTO {
 
 	public void setAllergen(Allergens allergen) {
 		this.allergen = allergen;
-	}
-
-	public Recipe getRecipe() {
-		return recipe;
-	}
-
-	public void setRecipe(Recipe recipe) {
-		this.recipe = recipe;
 	}
 
 }

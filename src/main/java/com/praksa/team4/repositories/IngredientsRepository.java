@@ -1,10 +1,12 @@
 package com.praksa.team4.repositories;
 
+import java.util.Optional;
+
 import org.springframework.data.repository.CrudRepository;
 import com.praksa.team4.entities.Ingredients;
 
 public interface IngredientsRepository extends CrudRepository<Ingredients, Integer> {
 
-	Ingredients findByName(String name);
+	Optional<Ingredients> findByName(String name);
 
 }
