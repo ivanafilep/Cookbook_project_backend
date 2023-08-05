@@ -36,6 +36,9 @@ public class Allergens {
 	@NotNull(message = "Icon must be included.")
 	private String icon;
 
+	@Column
+	private Boolean isActive;
+	
 	// TODO static folder urls
 
 	@JsonIgnore
@@ -51,12 +54,13 @@ public class Allergens {
 	private List<RegularUser> regularUsers;
 
 	public Allergens(Integer id, @NotNull(message = "Name must be included.") String name,
-			@NotNull(message = "Icon must be included.") String icon, List<Ingredients> ingredient,
+			@NotNull(message = "Icon must be included.") String icon, Boolean isActive, List<Ingredients> ingredient,
 			List<RegularUser> regularUsers) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
+		this.isActive = isActive;
 		this.ingredient = ingredient;
 		this.regularUsers = regularUsers;
 	}
@@ -102,5 +106,13 @@ public class Allergens {
 
 	public void setRegularUsers(List<RegularUser> regularUsers) {
 		this.regularUsers = regularUsers;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 }

@@ -54,6 +54,9 @@ public class Ingredients {
 
 	@Column
 	public Float saturatedFats;
+	
+	@Column
+	private Boolean isActive;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "allergen")
@@ -72,7 +75,7 @@ public class Ingredients {
 	public Ingredients(Integer id, @NotNull(message = "Name must be included.") String name,
 			@NotNull(message = "Unit must be included.") String unit,
 			@NotNull(message = "Calories must be included.") Float calories, Float carbs, Float fats, Float sugars,
-			Float proteins, Float saturatedFats, Allergens allergen, List<Recipe> recipes) {
+			Float proteins, Float saturatedFats, Boolean isActive, Allergens allergen, List<Recipe> recipes) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -83,6 +86,7 @@ public class Ingredients {
 		this.sugars = sugars;
 		this.proteins = proteins;
 		this.saturatedFats = saturatedFats;
+		this.isActive = isActive;
 		this.allergen = allergen;
 		this.recipes = recipes;
 	}
@@ -173,6 +177,14 @@ public class Ingredients {
 
 	public void setRecipes(List<Recipe> recipes) {
 		this.recipes = recipes;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 
 }
