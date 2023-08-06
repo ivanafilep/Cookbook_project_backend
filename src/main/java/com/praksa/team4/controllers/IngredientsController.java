@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.praksa.team4.entities.Allergens;
 import com.praksa.team4.entities.Ingredients;
-import com.praksa.team4.entities.dto.AllergensDTO;
 import com.praksa.team4.entities.dto.IngredientsDTO;
 import com.praksa.team4.repositories.AllergensRepository;
 import com.praksa.team4.repositories.IngredientsRepository;
@@ -72,7 +70,7 @@ public class IngredientsController {
 	public ResponseEntity<?> getById(@PathVariable Integer id) {
 		Optional<Ingredients> ingredient = ingredientsRepository.findById(id);
 
-		if (ingredient.isPresent()  && ingredient.get().getIsActive()) {
+		if (ingredient.isPresent() && ingredient.get().getIsActive()) {
 			logger.info("Found ingredient in the database");
 			return new ResponseEntity<IngredientsDTO>(new IngredientsDTO(ingredient.get()), HttpStatus.OK);
 		} else {
@@ -86,12 +84,12 @@ public class IngredientsController {
 	public ResponseEntity<?> getByName(@PathVariable String name) {
 		Optional<Ingredients> ingredient = ingredientsRepository.findByName(name);
 
-		if (ingredient.isPresent()  && ingredient.get().getIsActive()) {
+		if (ingredient.isPresent() && ingredient.get().getIsActive()) {
 			logger.info("Found ingredient in the database");
 			return new ResponseEntity<IngredientsDTO>(new IngredientsDTO(ingredient.get()), HttpStatus.OK);
 		} else {
 			logger.error("No ingredient found in the database.");
-			return new ResponseEntity<RESTError>(new RESTError(1,"No ingredient found with ID " + name), HttpStatus.NOT_FOUND);
+			return new ResponseEntity<RESTError>(new RESTError(1,"No ingredient found with name: " + name), HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -170,7 +168,7 @@ public class IngredientsController {
 		
 		Optional<Ingredients> ingredient = ingredientsRepository.findById(ingredient_id);
 		
-		if (ingredient.isEmpty() && !ingredient.get().getIsActive()) {
+		if (ingredient.isEmpty() || !ingredient.get().getIsActive()) {
 	        logger.error("There isn't an ingredient with that id" + ingredient_id + " in the database.");
 			return new ResponseEntity<RESTError>(new RESTError(1, "Ingredient with that id is not in the database."), HttpStatus.NOT_FOUND);
 		}
@@ -189,7 +187,7 @@ public class IngredientsController {
 		
 		Optional<Ingredients> ingredient = ingredientsRepository.findById(id);
 
-		if (ingredient.isEmpty() && !ingredient.get().getIsActive()) {
+		if (ingredient.isEmpty() || !ingredient.get().getIsActive()) {
 	        logger.error("There isn't an ingredient with id" + id + " in the database.");
 			return new ResponseEntity<RESTError>(new RESTError(1, "No ingredient found with ID " + id), HttpStatus.NOT_FOUND);
 		}
@@ -217,7 +215,7 @@ public class IngredientsController {
 		
 		Optional<Ingredients> ingredient = ingredientsRepository.findById(ingredient_id);
 
-		if (ingredient.isEmpty() && !ingredient.get().getIsActive()) {
+		if (ingredient.isEmpty() || !ingredient.get().getIsActive()) {
 			return new ResponseEntity<RESTError>(new RESTError(1, "No ingredient found with ID " + ingredient_id), HttpStatus.NOT_FOUND);
 		}
 

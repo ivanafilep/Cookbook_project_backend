@@ -28,7 +28,7 @@ public class RecipeDTO {
 
 	private Chef chefId;
 
-	public List<String> ingredients;
+	public List<Ingredients> ingredients;
 
 	public RecipeDTO() {
 		super();
@@ -44,7 +44,7 @@ public class RecipeDTO {
 		this.chefId = r.getChef();
 		this.ingredients = new ArrayList<>();
 		for (Ingredients i : r.getIngredients()) {
-			this.ingredients.add(i.getName());
+			this.ingredients.add(i);
 		}
 	}
 
@@ -94,14 +94,6 @@ public class RecipeDTO {
 
 	public void setChefId(Chef chefId) {
 		this.chefId = chefId;
-	}
-
-	public MyCookBook getMyCookBook() {
-		return myCookBook;
-	}
-
-	public void setMyCookBook(MyCookBook myCookBook) {
-		this.myCookBook = myCookBook;
 	}
 
 	public List<Ingredients> getIngredients() {
