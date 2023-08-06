@@ -63,6 +63,7 @@ public class RecipeServiceImpl implements RecipeService {
 			recipe.setSteps(newRecipe.getSteps());
 			recipe.setAmount(newRecipe.getAmount());
 			recipe.setPicture(newRecipe.getPicture());
+			recipe.setIsActive(true);
 			recipe.setChef(chef);
 			List<Ingredients> listIngredients = new ArrayList<>();
 			for (Ingredients ingredients : newRecipe.getIngredients()) {

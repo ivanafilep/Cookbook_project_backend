@@ -1,5 +1,7 @@
 package com.praksa.team4.services;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.validation.BindingResult;
 
 import com.praksa.team4.entities.Chef;
 import com.praksa.team4.entities.UserEntity;
+import com.praksa.team4.entities.dto.ChefDTO;
 import com.praksa.team4.entities.dto.UserDTO;
 import com.praksa.team4.repositories.ChefRepository;
 import com.praksa.team4.repositories.UserRepository;
@@ -32,11 +35,11 @@ public class ChefServiceImpl implements ChefService {
 
 	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
-	public ResponseEntity<?> createChef(UserDTO chef, BindingResult result, Authentication authentication) {
+	public ResponseEntity<?> createChef(UserDTO chef, BindingResult result) {
 
 		if (result.hasErrors()) {
 			logger.error("Sent incorrect parameters.");
-			return new ResponseEntity<>(ErrorMessageHelper.createErrorMessage(result), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<RESTError>(new RESTError(1,ErrorMessageHelper.createErrorMessage(result)), HttpStatus.BAD_REQUEST);
 		} else {
 			logger.info("Validating if the users password matches the confirming password");
 			userValidator.validate(chef, result);
@@ -52,6 +55,7 @@ public class ChefServiceImpl implements ChefService {
 		UserEntity existingUserWithUsername = userRepository.findByUsername(chef.getUsername());
 		logger.info("Finding out whether there's a user with the same username.");
 
+		//TODO proveriti ove 57 i 62 da li izbacuju gresku dobru
 		if (existingUserWithEmail != null) {
 			logger.error("There is a user with the same email.");
 			return new ResponseEntity<RESTError>(new RESTError(1, "Email already exists"), HttpStatus.CONFLICT);
@@ -70,12 +74,13 @@ public class ChefServiceImpl implements ChefService {
 		newChef.setLastname(chef.getLastname());
 		newChef.setEmail(chef.getEmail());
 		newChef.setRole("ROLE_CHEF");
+		newChef.setIsActive(true);
 		logger.info("Setting chef role.");
 
 		chefRepository.save(newChef);
 		logger.info("Saving chef to the database");
 
-		return new ResponseEntity<Chef>(newChef, HttpStatus.CREATED);
+		return new ResponseEntity<ChefDTO>(new ChefDTO(newChef), HttpStatus.CREATED);
 
 	}
 
@@ -87,21 +92,26 @@ public class ChefServiceImpl implements ChefService {
 
 		if (currentChef.getRole().equals("ROLE_ADMIN")) {
 			logger.info("Admin " + currentChef.getName() + " " + currentChef.getLastname() + " is updating chef.");
-			Chef changeChef = chefRepository.findById(id).get();
+			
+			Optional<Chef> changeChef = chefRepository.findById(id);
 
-			changeChef.setUsername(updatedChef.getUsername());
-			changeChef.setPassword(updatedChef.getPassword());
-			changeChef.setName(updatedChef.getName());
-			changeChef.setLastname(updatedChef.getLastname());
-			changeChef.setEmail(updatedChef.getEmail());
-			changeChef.setRole(updatedChef.getRole());
-			changeChef.setRecipes(updatedChef.getRecipes());
-			chefRepository.save(changeChef);
+			if (changeChef.isEmpty() || !changeChef.get().getIsActive()) {
+		        logger.error("There is no chef found with id" + id + " in the database.");
+				return new ResponseEntity<RESTError>(new RESTError(1, "No chef found with ID " + id), HttpStatus.NOT_FOUND);
+			}
 
-			return new ResponseEntity<>(changeChef, HttpStatus.OK);
+			changeChef.get().setUsername(updatedChef.getUsername());
+			changeChef.get().setPassword(updatedChef.getPassword());
+			changeChef.get().setName(updatedChef.getName());
+			changeChef.get().setLastname(updatedChef.getLastname());
+			changeChef.get().setEmail(updatedChef.getEmail());
+			changeChef.get().setRole(updatedChef.getRole());
+			changeChef.get().setRecipes(updatedChef.getRecipes());
+			chefRepository.save(changeChef.get());
+
+			return new ResponseEntity<ChefDTO>(new ChefDTO(changeChef.get()), HttpStatus.OK);
 		} else if (currentChef.getRole().equals("ROLE_CHEF")) {
-			logger.info(
-					"Chef" + currentChef.getName() + " " + currentChef.getLastname() + " is updating his own profile.");
+			logger.info("Chef" + currentChef.getName() + " " + currentChef.getLastname() + " is updating his own profile.");
 			Chef chef = (Chef) currentChef;
 			Chef changeChef = chefRepository.findById(id).get();
 
@@ -115,12 +125,11 @@ public class ChefServiceImpl implements ChefService {
 				changeChef.setPassword(updatedChef.getPassword());
 				chefRepository.save(changeChef);
 
-				return new ResponseEntity<>(changeChef, HttpStatus.OK);
+				return new ResponseEntity<ChefDTO>(new ChefDTO(changeChef), HttpStatus.OK);
 			}
 		}
 
-		return new ResponseEntity<RESTError>(new RESTError(2, "Not authorized to update chef"),
-				HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<RESTError>(new RESTError(2, "Not authorized to update chef"), HttpStatus.UNAUTHORIZED);
 
 	}
 

@@ -1,6 +1,8 @@
 package com.praksa.team4.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -19,9 +21,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.praksa.team4.entities.Chef;
+import com.praksa.team4.entities.MyCookBook;
+import com.praksa.team4.entities.dto.ChefDTO;
+import com.praksa.team4.entities.dto.MyCookBookDTO;
 import com.praksa.team4.entities.dto.UserDTO;
 import com.praksa.team4.repositories.ChefRepository;
 import com.praksa.team4.services.ChefServiceImpl;
+import com.praksa.team4.util.RESTError;
 import com.praksa.team4.util.UserCustomValidator;
 
 @RestController
@@ -42,16 +48,33 @@ public class ChefController {
 
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List<Chef>> getAllChefs() {
-		List<Chef> chefs = (List<Chef>) chefRepository.findAll();
-		return new ResponseEntity<>(chefs, HttpStatus.OK);
+	public ResponseEntity<?> getAllChefs() {
+		try {
+			List<Chef> chefs = (List<Chef>) chefRepository.findAll();
+
+			if (chefs.isEmpty()) {
+		        logger.error("No chef found in the database.");
+				return new ResponseEntity<RESTError>(new RESTError(1, "No chefs found in the database"), HttpStatus.NOT_FOUND);
+			} else {
+				ArrayList<ChefDTO> activeChefs = new ArrayList<>();
+				for(Chef chefDB : chefs) {
+					if (chefDB.getIsActive()) {
+						activeChefs.add(new ChefDTO(chefDB));
+					}
+				}
+		        logger.info("Found chefs in the database");
+				return new ResponseEntity<ArrayList<ChefDTO>>(activeChefs, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<RESTError>(new RESTError(2, "Exception occurred: " + e.getMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> addNewChef(@Valid @RequestBody UserDTO chef, BindingResult result,
-			Authentication authentication) {
-		return chefServiceImpl.createChef(chef, result, authentication);
+	public ResponseEntity<?> addNewChef(@Valid @RequestBody UserDTO chef, BindingResult result) {
+		return chefServiceImpl.createChef(chef, result);
 
 	}
 
@@ -66,12 +89,15 @@ public class ChefController {
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
 	public ResponseEntity<?> deleteChef(@PathVariable Integer id) {
-		Chef chef = chefRepository.findById(id).orElse(null);
-		if (chef == null) {
-			return new ResponseEntity<>("Chef not found", HttpStatus.NOT_FOUND);
+		
+		Optional<Chef> chef = chefRepository.findById(id);
+		
+		if (chef.isEmpty() || !chef.get().getIsActive()) {
+			return new ResponseEntity<>("Chef not found in the database", HttpStatus.NOT_FOUND);
 		}
 
-		chefRepository.delete(chef);
+		chef.get().setIsActive(false);
+		chefRepository.save(chef.get());
 		return new ResponseEntity<>("Chef successfully deleted", HttpStatus.OK);
 	}
 }
