@@ -1,6 +1,6 @@
 package com.praksa.team4.services;
 
 
-public interface RegularUserService {
+public interface AllergensService {
 
 }

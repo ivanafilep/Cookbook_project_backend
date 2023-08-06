@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.praksa.team4.entities.MyCookBook;
 import com.praksa.team4.entities.Recipe;
-import com.praksa.team4.entities.RegularUser;
 
 public class MyCookBookDTO {
 

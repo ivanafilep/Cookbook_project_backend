@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 
 import com.praksa.team4.entities.Chef;
 import com.praksa.team4.entities.Ingredients;
-import com.praksa.team4.entities.MyCookBook;
 import com.praksa.team4.entities.Recipe;
 
 public class RecipeDTO {
