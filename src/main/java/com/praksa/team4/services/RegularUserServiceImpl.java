@@ -1,5 +1,7 @@
 package com.praksa.team4.services;
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import com.praksa.team4.entities.MyCookBook;
 import com.praksa.team4.entities.RegularUser;
 import com.praksa.team4.entities.UserEntity;
+import com.praksa.team4.entities.dto.RegularUserDTO;
 import com.praksa.team4.entities.dto.UserDTO;
 import com.praksa.team4.repositories.CookBookRepository;
 import com.praksa.team4.repositories.RegularUserRepository;
@@ -39,6 +42,7 @@ public class RegularUserServiceImpl implements RegularUserService {
 	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
 	public ResponseEntity<?> createRegularUser(@Valid UserDTO newUser, BindingResult result, Authentication authentication) {
+		
 		if (result.hasErrors()) {
 			logger.error("Sent incorrect parameters.");
 			return new ResponseEntity<>(ErrorMessageHelper.createErrorMessage(result), HttpStatus.BAD_REQUEST);
@@ -50,12 +54,14 @@ public class RegularUserServiceImpl implements RegularUserService {
 				return new ResponseEntity<>(result.getFieldError(), HttpStatus.BAD_REQUEST);
 			}
 		}
+		
 		UserEntity existingUserWithEmail = userRepository.findByEmail(newUser.getEmail());
 		logger.info("Finding out whether there's a user with the same email.");
 
 		UserEntity existingUserWithUsername = userRepository.findByUsername(newUser.getUsername());
 		logger.info("Finding out whether there's a user with the same username.");
 
+		//TODO provera != da l radi posao
 		if (existingUserWithEmail != null) {
 			logger.error("There is a user with the same email.");
 			return new ResponseEntity<RESTError>(new RESTError(1, "Email already exists"), HttpStatus.CONFLICT);
@@ -88,43 +94,48 @@ public class RegularUserServiceImpl implements RegularUserService {
 		regularUserRepository.save(newRegularUser);
 		logger.info("Saving cookbook to the regular user");
 
-		return new ResponseEntity<RegularUser>(newRegularUser, HttpStatus.CREATED);
+		return new ResponseEntity<RegularUserDTO>(new RegularUserDTO(newRegularUser), HttpStatus.CREATED);
 
 	}
 
 	public ResponseEntity<?> updateRegularUser(UserDTO updatedRegularUser, Integer id, Authentication authentication) {
+		
+		Optional<RegularUser> changeUser = regularUserRepository.findById(id);
+
+		if (changeUser.isEmpty() || !changeUser.get().getIsActive()) {
+	        logger.error("There is no regular user found with id" + id + " in the database.");
+			return new ResponseEntity<RESTError>(new RESTError(1, "No regular user found with ID " + id), HttpStatus.NOT_FOUND);
+		}
+		
 		String email = (String) authentication.getName();
 		UserEntity currentUser = userRepository.findByEmail(email);
 
 		if (currentUser.getRole().equals("ROLE_ADMIN")) {
-			logger.info(
-					"Admin " + currentUser.getName() + " " + currentUser.getLastname() + " is updating regular user.");
-			RegularUser changeUser = regularUserRepository.findById(id).get();
-			changeUser.setName(updatedRegularUser.getName());
-			changeUser.setLastname(updatedRegularUser.getLastname());
-			changeUser.setUsername(updatedRegularUser.getUsername());
-			changeUser.setEmail(updatedRegularUser.getEmail());
-			changeUser.setPassword(updatedRegularUser.getPassword());
-			regularUserRepository.save(changeUser);
+			logger.info("Admin " + currentUser.getName() + " " + currentUser.getLastname() + " is updating regular user.");
+			changeUser.get().setName(updatedRegularUser.getName());
+			changeUser.get().setLastname(updatedRegularUser.getLastname());
+			changeUser.get().setUsername(updatedRegularUser.getUsername());
+			changeUser.get().setEmail(updatedRegularUser.getEmail());
+			changeUser.get().setPassword(updatedRegularUser.getPassword());
+			regularUserRepository.save(changeUser.get());
 
-			return new ResponseEntity<>(changeUser, HttpStatus.OK);
+			return new ResponseEntity<RegularUserDTO>(new RegularUserDTO(changeUser.get()), HttpStatus.OK);
 		} else if (currentUser.getRole().equals("ROLE_REGULAR_USER")) {
 			logger.info("Regular user" + currentUser.getName() + " " + currentUser.getLastname()
 					+ " is updating his own profile.");
 			RegularUser regularUser = (RegularUser) currentUser;
-			RegularUser changeUser = regularUserRepository.findById(id).get();
 
-			if (regularUser.getId().equals(changeUser.getId())) {
+			if (regularUser.getId().equals(changeUser.get().getId())) {
 				logger.info("Regular user is updating his own profile.");
 
-				changeUser.setName(updatedRegularUser.getName());
-				changeUser.setLastname(updatedRegularUser.getLastname());
-				changeUser.setUsername(updatedRegularUser.getUsername());
-				changeUser.setEmail(updatedRegularUser.getEmail());
-				changeUser.setPassword(updatedRegularUser.getPassword());
-				regularUserRepository.save(changeUser);
+				changeUser.get().setName(updatedRegularUser.getName());
+				changeUser.get().setLastname(updatedRegularUser.getLastname());
+				changeUser.get().setUsername(updatedRegularUser.getUsername());
+				changeUser.get().setEmail(updatedRegularUser.getEmail());
+				changeUser.get().setPassword(updatedRegularUser.getPassword());
+				regularUserRepository.save(changeUser.get());
 
-				return new ResponseEntity<>(changeUser, HttpStatus.OK);
+				return new ResponseEntity<RegularUserDTO>(new RegularUserDTO(changeUser.get()), HttpStatus.OK);
 			}
 		}
 
