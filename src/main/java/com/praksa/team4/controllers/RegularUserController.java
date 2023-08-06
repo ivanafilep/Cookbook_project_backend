@@ -70,7 +70,6 @@ public class RegularUserController {
 		}
 	}
 
-	// TODO SignUp? ne treba secured, jer svima treba da bude dostupno?
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> createRegularUser(@Valid @RequestBody UserDTO newUser, BindingResult result,
 			Authentication authentication) {

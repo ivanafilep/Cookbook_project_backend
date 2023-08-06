@@ -46,26 +46,15 @@ public class RecipeServiceImpl implements RecipeService {
 
 		if (result.hasErrors()) {
 			logger.error("Sent incorrect parameters.");
-			return new ResponseEntity<>(ErrorMessageHelper.createErrorMessage(result), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<RESTError>(new RESTError(1, ErrorMessageHelper.createErrorMessage(result)),
+					HttpStatus.BAD_REQUEST);
 		}
 
 		String signedInUserEmail = authentication.getName();
 		UserEntity currentUser = userRepository.findByEmail(signedInUserEmail);
 
-//		Optional<Recipe> existingRecipe = recipeRepository.findByName(newRecipe.getName());
-//		logger.info("Checking whether theres an existing recipe in the database");
-//
-//		if (existingRecipe.isEmpty()) {
-//			logger.error("Recipe with the same name already exists");
-//			return new ResponseEntity<RESTError>(new RESTError(1, "A recipe with the same name already exists"),
-//					HttpStatus.CONFLICT);
-//		}
-		if (result.hasErrors()) {
-			logger.info("Validating input parameters for recipe");
-			return new ResponseEntity<>(ErrorMessageHelper.createErrorMessage(result), HttpStatus.BAD_REQUEST);
-		}
-
 		if (currentUser.getRole().equals("ROLE_CHEF")) {
+			Chef chef = (Chef) currentUser;
 
 			Recipe recipe = new Recipe();
 
@@ -74,63 +63,131 @@ public class RecipeServiceImpl implements RecipeService {
 			recipe.setSteps(newRecipe.getSteps());
 			recipe.setAmount(newRecipe.getAmount());
 			recipe.setPicture(newRecipe.getPicture());
-			// TODO for chef get TOKEN
+			recipe.setChef(chef);
 			List<Ingredients> listIngredients = new ArrayList<>();
 			for (Ingredients ingredients : newRecipe.getIngredients()) {
-				Ingredients newIngredients = ingredientsRepository.findById(ingredients.getId()).get();
-				listIngredients.add(newIngredients);
+				if (ingredients.getIsActive()) {
+					Ingredients newIngredients = ingredientsRepository.findById(ingredients.getId()).get();
+					listIngredients.add(newIngredients);
+				}
 			}
 			recipe.setIngredients(listIngredients);
 
 			recipeRepository.save(recipe);
 			logger.info("Saving recipe to the database");
 
-			return new ResponseEntity<Recipe>(recipe, HttpStatus.CREATED);
+			return new ResponseEntity<RecipeDTO>(new RecipeDTO(recipe), HttpStatus.CREATED);
 		}
-		return new ResponseEntity<RESTError>(new RESTError(1, "User is not authorized to create recipes."), HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<RESTError>(new RESTError(2, "User is not authorized to create recipes."),
+				HttpStatus.UNAUTHORIZED);
 	}
 
-	public ResponseEntity<?> updateRecipe(RecipeDTO updatedRecipe, BindingResult result, Integer id) {
+	public ResponseEntity<?> updateRecipe(RecipeDTO updatedRecipe, BindingResult result, Integer id,
+			Authentication authentication) {
 
 		if (result.hasErrors()) {
 			logger.info("Validating input parameters for recipe");
-			return new ResponseEntity<>(ErrorMessageHelper.createErrorMessage(result), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<RESTError>(new RESTError(1, ErrorMessageHelper.createErrorMessage(result)),
+					HttpStatus.BAD_REQUEST);
 		}
-
-		Recipe recipe = recipeRepository.findById(id).orElse(null);
-
-		if (recipe == null) {
-			logger.error("No recipe with " + id + " ID found");
-			return new ResponseEntity<RESTError>(new RESTError(1, "No recipe with " + id + " ID found"),
-					HttpStatus.NOT_FOUND);
-		}
-
-		recipe.setName(updatedRecipe.getName());
-		recipe.setTime(updatedRecipe.getTime());
-		recipe.setSteps(updatedRecipe.getSteps());
-		recipe.setAmount(updatedRecipe.getAmount());
-
-		recipeRepository.save(recipe);
-		logger.info("Saving recipe to the database");
-
-		return new ResponseEntity<Recipe>(recipe, HttpStatus.OK);
-	}
-
-	public ResponseEntity<?> deleteRecipe(Integer id, BindingResult result) {
 
 		Optional<Recipe> recipe = recipeRepository.findById(id);
 
-		if (recipe.isPresent()) {
+		if (recipe.isEmpty() || !recipe.get().getIsActive()) {
+			logger.error("No recipe with " + id + " ID found");
+			return new ResponseEntity<RESTError>(new RESTError(2, "No recipe with " + id + " ID found"),
+					HttpStatus.NOT_FOUND);
+		}
+
+		String signedInUserEmail = authentication.getName();
+		UserEntity currentUser = userRepository.findByEmail(signedInUserEmail);
+
+		if (currentUser.getRole().equals("ROLE_ADMIN")) {
+			logger.info("Admin is updating the recipe from the database");
+
+			recipe.get().setName(updatedRecipe.getName());
+			recipe.get().setTime(updatedRecipe.getTime());
+			recipe.get().setSteps(updatedRecipe.getSteps());
+			recipe.get().setAmount(updatedRecipe.getAmount());
+			recipe.get().setPicture(updatedRecipe.getPicture());
+			List<Ingredients> listIngredients = new ArrayList<>();
+			for (Ingredients ingredients : updatedRecipe.getIngredients()) {
+				if (ingredients.getIsActive()) {
+					Ingredients newIngredients = ingredientsRepository.findById(ingredients.getId()).get();
+					listIngredients.add(newIngredients);
+				}
+			}
+			recipe.get().setIngredients(listIngredients);
+
+			recipeRepository.save(recipe.get());
+			logger.info("Saving recipe to the database");
+
+			return new ResponseEntity<RecipeDTO>(new RecipeDTO(recipe.get()), HttpStatus.OK);
+		} else if (currentUser.getRole().equals("ROLE_CHEF")) {
+			Chef chef = (Chef) currentUser;
+			if (chef.getRecipes().contains(recipe.get())) {
+				recipe.get().setName(updatedRecipe.getName());
+				recipe.get().setTime(updatedRecipe.getTime());
+				recipe.get().setSteps(updatedRecipe.getSteps());
+				recipe.get().setAmount(updatedRecipe.getAmount());
+				recipe.get().setPicture(updatedRecipe.getPicture());
+				List<Ingredients> listIngredients = new ArrayList<>();
+				for (Ingredients ingredients : updatedRecipe.getIngredients()) {
+					if (ingredients.getIsActive()) {
+						Ingredients newIngredients = ingredientsRepository.findById(ingredients.getId()).get();
+						listIngredients.add(newIngredients);
+					}
+				}
+				recipe.get().setIngredients(listIngredients);
+
+				recipeRepository.save(recipe.get());
+				logger.info("Saving recipe to the database");
+			}
+
+			return new ResponseEntity<RecipeDTO>(new RecipeDTO(recipe.get()), HttpStatus.OK);
+		}
+		return new ResponseEntity<RESTError>(new RESTError(3, "Not authorized to update recipe"),
+				HttpStatus.UNAUTHORIZED);
+	}
+
+	public ResponseEntity<?> deleteRecipe(Integer id, BindingResult result, Authentication authentication) {
+
+		Optional<Recipe> recipe = recipeRepository.findById(id);
+
+		String signedInUserEmail = authentication.getName();
+		UserEntity currentUser = userRepository.findByEmail(signedInUserEmail);
+
+		if (!recipe.isPresent()) {
+			logger.error("There is no recipe found with " + id);
+			return new ResponseEntity<RESTError>(new RESTError(1, "No recipe found"), HttpStatus.NOT_FOUND);
+		}
+
+		if (currentUser.getRole().equals("ROLE_ADMIN")) {
+			logger.info("Admin is deleting recipe from the database");
 			for (Ingredients ingredients : recipe.get().getIngredients()) {
 				recipe.get().getIngredients().remove(ingredients);
 				ingredientsRepository.save(ingredients);
 			}
-			recipeRepository.delete(recipe.get());
+			recipe.get().setIsActive(false);
+			recipeRepository.save(recipe.get());
 			logger.info("Deleting recipe from the database");
 			return new ResponseEntity<>("Recipe with ID " + id + " has been successfully deleted.", HttpStatus.OK);
-		} else {
-			logger.error("There is no recipe found with " + id);
-			return new ResponseEntity<RESTError>(new RESTError(1, "No recipe found"), HttpStatus.NOT_FOUND);
+
+		} else if (currentUser.getRole().equals("ROLE_CHEF")) {
+			Chef chef = (Chef) currentUser;
+			if (chef.getRecipes().contains(recipe.get())) {
+				for (Ingredients ingredients : recipe.get().getIngredients()) {
+					recipe.get().getIngredients().remove(ingredients);
+					ingredientsRepository.save(ingredients);
+				}
+				recipe.get().setIsActive(false);
+				recipeRepository.save(recipe.get());
+				logger.info("Deleting recipe from the database");
+			}
+			return new ResponseEntity<>("Recipe with ID " + id + " has been successfully deleted.", HttpStatus.OK);
+
 		}
+		return new ResponseEntity<RESTError>(new RESTError(3, "Not authorized to update recipe"),
+				HttpStatus.UNAUTHORIZED);
 	}
 }
