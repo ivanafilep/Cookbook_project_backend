@@ -1,5 +1,6 @@
 package com.praksa.team4.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +23,9 @@ import com.praksa.team4.entities.MyCookBook;
 import com.praksa.team4.entities.Recipe;
 import com.praksa.team4.entities.RegularUser;
 import com.praksa.team4.entities.UserEntity;
+import com.praksa.team4.entities.dto.IngredientsDTO;
 import com.praksa.team4.entities.dto.MyCookBookDTO;
+import com.praksa.team4.entities.dto.RecipeDTO;
 import com.praksa.team4.repositories.CookBookRepository;
 import com.praksa.team4.repositories.RecipeRepository;
 import com.praksa.team4.repositories.RegularUserRepository;
@@ -56,8 +59,14 @@ public class MyCookBookController {
 		        logger.error("No cookbook found in the database.");
 				return new ResponseEntity<RESTError>(new RESTError(1, "No cookbook found"), HttpStatus.NOT_FOUND);
 			} else {
+				ArrayList<MyCookBookDTO> activeCookbook = new ArrayList<>();
+				for(MyCookBook cookbookDB : myCookBook) {
+					if (cookbookDB.getIsActive()) {
+						activeCookbook.add(new MyCookBookDTO(cookbookDB));
+					}
+				}
 		        logger.info("Found cookbook in the database");
-				return new ResponseEntity<Iterable<MyCookBook>>(cookBookRepository.findAll(), HttpStatus.OK);
+				return new ResponseEntity<ArrayList<MyCookBookDTO>>(activeCookbook, HttpStatus.OK);
 			}
 		} catch (Exception e) {
 			return new ResponseEntity<RESTError>(new RESTError(2, "Exception occurred: " + e.getMessage()),
@@ -67,14 +76,41 @@ public class MyCookBookController {
 	
 	@Secured({"ROLE_ADMIN", "ROLE_REGULAR_USER"})
 	@RequestMapping(method = RequestMethod.GET, path = "/{id}")
-	public ResponseEntity<?> getCookBookById(@PathVariable Integer id) {
-		Optional<MyCookBook> myCookBook = cookBookRepository.findById(id);
+	public ResponseEntity<?> getCookBookById(@PathVariable Integer id, Authentication authentication) {
 
+		String email = (String) authentication.getName();
+		UserEntity currentUser = userRepository.findByEmail(email);
+		
+		Optional<MyCookBook> myCookBook = cookBookRepository.findById(id);
+		
 		if (!myCookBook.isPresent()) {
 			return new ResponseEntity<RESTError>(new RESTError(1, "CookBook is not found!"), HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity<MyCookBookDTO>(new MyCookBookDTO(myCookBook.get()), HttpStatus.OK);
+		if (currentUser.getRole().equals("ROLE_ADMIN")) {
+			ArrayList<RecipeDTO> cookbookRecipes = new ArrayList<>();
+			for (Recipe recipe : myCookBook.get().getRecipes()) {
+				if(recipe.getIsActive()) {
+					cookbookRecipes.add(new RecipeDTO(recipe));
+				}
+			}
+			return new ResponseEntity<ArrayList<RecipeDTO>>(new RecipeDTO(cookbookRecipes), HttpStatus.OK);
+		} else if (currentUser.getRole().equals("ROLE_REGULAR_USER")) {
+			logger.info("Regular user" + currentUser.getName() + " " + currentUser.getLastname() + " is looking at his own cookbook.");
+			RegularUser regularUser = (RegularUser) currentUser;
+
+			if (regularUser.getMyCookBook().getId().equals(myCookBook.get().getId())) {
+				logger.info("Regular user is updating his own cookbook.");
+				ArrayList<RecipeDTO> cookbookRecipes = new ArrayList<>();
+				for (Recipe recipe : myCookBook.get().getRecipes()) {
+					if(recipe.getIsActive()) {
+						cookbookRecipes.add(new RecipeDTO(recipe));
+					}
+				}
+			}
+			return new ResponseEntity<ArrayList<RecipeDTO>>(new RecipeDTO(cookbookRecipes), HttpStatus.OK);
+		}
+		return new ResponseEntity<RESTError>(new RESTError(2, "Not authorized to update regular user"), HttpStatus.UNAUTHORIZED);
 	}
 
 	@Secured("ROLE_REGULAR_USER")

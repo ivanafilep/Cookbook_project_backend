@@ -23,11 +23,13 @@ public class AdminController {
 	@Autowired
 	private AdminRepository adminRepository;
 
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAll() {
 		return new ResponseEntity<Iterable<Admin>>(adminRepository.findAll(), HttpStatus.OK);
 	}
 
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addNewAdmin(@Valid @RequestBody UserDTO newUser) {
 		Admin newAdmin = new Admin();
@@ -43,6 +45,7 @@ public class AdminController {
 		return new ResponseEntity<>(newAdmin, HttpStatus.CREATED);
 	}
 
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.PUT, path = "/{id}")
 	public ResponseEntity<?> updateAdmin(@PathVariable Integer id, @RequestBody UserDTO updatedAdmin) {
 		Admin admin = adminRepository.findById(id).get();
@@ -57,6 +60,7 @@ public class AdminController {
 		return new ResponseEntity<>(admin, HttpStatus.OK);
 	}
 
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
 	public ResponseEntity<?> deleteAdmin(@PathVariable Integer id) {
 		Optional<Admin> admin = adminRepository.findById(id);

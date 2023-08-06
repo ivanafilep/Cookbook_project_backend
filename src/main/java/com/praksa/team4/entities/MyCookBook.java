@@ -3,6 +3,7 @@ package com.praksa.team4.entities;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,15 +36,19 @@ public class MyCookBook {
 			@JoinColumn(name = "MyCookBook_id", nullable = false, updatable = false) }, inverseJoinColumns = {
 					@JoinColumn(name = "Recipes_id", nullable = false, updatable = false) })
 	private List<Recipe> recipes;
+	
+	@Column
+	private Boolean isActive;
 
 	public MyCookBook() {
 	}
 
-	public MyCookBook(Integer id, RegularUser regularUser, List<Recipe> recipes) {
+	public MyCookBook(Integer id, RegularUser regularUser, List<Recipe> recipes, Boolean isActive) {
 		super();
 		this.id = id;
 		this.regularUser = regularUser;
 		this.recipes = recipes;
+		this.isActive = isActive;
 	}
 
 	public Integer getId() {
@@ -68,6 +73,14 @@ public class MyCookBook {
 
 	public void setRegularUser(RegularUser regularUser) {
 		this.regularUser = regularUser;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 
 }
