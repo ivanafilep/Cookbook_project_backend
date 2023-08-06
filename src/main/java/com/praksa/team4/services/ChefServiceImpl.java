@@ -87,19 +87,19 @@ public class ChefServiceImpl implements ChefService {
 	public ResponseEntity<?> updateChef(Chef updatedChef, BindingResult result, Integer id,
 			Authentication authentication) {
 
+		Optional<Chef> changeChef = chefRepository.findById(id);
+
+		if (changeChef.isEmpty() || !changeChef.get().getIsActive()) {
+	        logger.error("There is no chef found with id" + id + " in the database.");
+			return new ResponseEntity<RESTError>(new RESTError(1, "No chef found with ID " + id), HttpStatus.NOT_FOUND);
+		}
+		
 		String email = (String) authentication.getName();
 		UserEntity currentChef = userRepository.findByEmail(email);
 
 		if (currentChef.getRole().equals("ROLE_ADMIN")) {
 			logger.info("Admin " + currentChef.getName() + " " + currentChef.getLastname() + " is updating chef.");
 			
-			Optional<Chef> changeChef = chefRepository.findById(id);
-
-			if (changeChef.isEmpty() || !changeChef.get().getIsActive()) {
-		        logger.error("There is no chef found with id" + id + " in the database.");
-				return new ResponseEntity<RESTError>(new RESTError(1, "No chef found with ID " + id), HttpStatus.NOT_FOUND);
-			}
-
 			changeChef.get().setUsername(updatedChef.getUsername());
 			changeChef.get().setPassword(updatedChef.getPassword());
 			changeChef.get().setName(updatedChef.getName());
@@ -113,19 +113,18 @@ public class ChefServiceImpl implements ChefService {
 		} else if (currentChef.getRole().equals("ROLE_CHEF")) {
 			logger.info("Chef" + currentChef.getName() + " " + currentChef.getLastname() + " is updating his own profile.");
 			Chef chef = (Chef) currentChef;
-			Chef changeChef = chefRepository.findById(id).get();
 
-			if (chef.getId().equals(changeChef.getId())) {
+			if (chef.getId().equals(changeChef.get().getId())) {
 				logger.info("Chef is updating his own profile.");
 
-				changeChef.setName(updatedChef.getName());
-				changeChef.setLastname(updatedChef.getLastname());
-				changeChef.setUsername(updatedChef.getUsername());
-				changeChef.setEmail(updatedChef.getEmail());
-				changeChef.setPassword(updatedChef.getPassword());
-				chefRepository.save(changeChef);
+				changeChef.get().setName(updatedChef.getName());
+				changeChef.get().setLastname(updatedChef.getLastname());
+				changeChef.get().setUsername(updatedChef.getUsername());
+				changeChef.get().setEmail(updatedChef.getEmail());
+				changeChef.get().setPassword(updatedChef.getPassword());
+				chefRepository.save(changeChef.get());
 
-				return new ResponseEntity<ChefDTO>(new ChefDTO(changeChef), HttpStatus.OK);
+				return new ResponseEntity<ChefDTO>(new ChefDTO(changeChef.get()), HttpStatus.OK);
 			}
 		}
 

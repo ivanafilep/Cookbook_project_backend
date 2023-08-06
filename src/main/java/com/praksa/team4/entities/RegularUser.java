@@ -30,6 +30,8 @@ public class RegularUser extends UserEntity {
 			@JoinColumn(name = "RegularUser_id", nullable = false, updatable = false) }, inverseJoinColumns = {
 					@JoinColumn(name = "Allergens_id", nullable = false, updatable = false) })
 	private List<Allergens> allergens;
+	
+	private Boolean isActive;
 
 	public RegularUser() {
 		super();
@@ -41,10 +43,11 @@ public class RegularUser extends UserEntity {
 			@NotNull(message = "Name must be included.") @Size(min = 2, max = 30, message = "Name must be between {min} and {max} characters long.") String name,
 			@NotNull(message = "Lastname must be included.") @Size(min = 2, max = 30, message = "Lastname must be between {min} and {max} characters long.") String lastname,
 			@NotNull(message = "Email must be included.") @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.") String email,
-			String role, Integer version, MyCookBook myCookBook, List<Allergens> allergens) {
+			String role, Integer version, MyCookBook myCookBook, List<Allergens> allergens, Boolean isActive) {
 		super(id, username, password, name, lastname, email, role, version);
 		this.myCookBook = myCookBook;
 		this.allergens = allergens;
+		this.isActive = isActive;
 	}
 
 	public MyCookBook getMyCookBook() {
@@ -61,6 +64,14 @@ public class RegularUser extends UserEntity {
 
 	public void setAllergens(List<Allergens> allergens) {
 		this.allergens = allergens;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 
 }
