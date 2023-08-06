@@ -1,5 +1,6 @@
 package com.praksa.team4.entities.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -7,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import com.praksa.team4.entities.Chef;
 import com.praksa.team4.entities.Ingredients;
 import com.praksa.team4.entities.MyCookBook;
+import com.praksa.team4.entities.Recipe;
 
 public class RecipeDTO {
 
@@ -26,28 +28,24 @@ public class RecipeDTO {
 
 	private Chef chefId;
 
-	public List<Ingredients> ingredients;
-
-	public MyCookBook myCookBook;
+	public List<String> ingredients;
 
 	public RecipeDTO() {
 		super();
 	}
 
-	public RecipeDTO(@NotNull(message = "Name must be included.") String name,
-			@NotNull(message = "Steps must be included.") String steps,
-			@NotNull(message = "Time must be included.") Integer time,
-			@NotNull(message = "Amount must be included.") Integer amount, String picture, Chef chefId,
-			List<Ingredients> ingredients, MyCookBook myCookBook) {
+	public RecipeDTO(Recipe r) {
 		super();
-		this.name = name;
-		this.steps = steps;
-		this.time = time;
-		this.amount = amount;
-		this.picture = picture;
-		this.chefId = chefId;
-		this.ingredients = ingredients;
-		this.myCookBook = myCookBook;
+		this.name = r.getName();
+		this.steps = r.getSteps();
+		this.time = r.getTime();
+		this.amount = r.getAmount();
+		this.picture = r.getPicture();
+		this.chefId = r.getChef();
+		this.ingredients = new ArrayList<>();
+		for (Ingredients i : r.getIngredients()) {
+			this.ingredients.add(i.getName());
+		}
 	}
 
 	public String getName() {

@@ -83,7 +83,7 @@ public class MyCookBookController {
 		
 		Optional<MyCookBook> myCookBook = cookBookRepository.findById(id);
 		
-		if (!myCookBook.isPresent()) {
+		if (!myCookBook.isPresent() && !myCookBook.get().getIsActive()) {
 			return new ResponseEntity<RESTError>(new RESTError(1, "CookBook is not found!"), HttpStatus.NOT_FOUND);
 		}
 		
@@ -94,7 +94,7 @@ public class MyCookBookController {
 					cookbookRecipes.add(new RecipeDTO(recipe));
 				}
 			}
-			return new ResponseEntity<ArrayList<RecipeDTO>>(new RecipeDTO(cookbookRecipes), HttpStatus.OK);
+			return new ResponseEntity<ArrayList<RecipeDTO>>(cookbookRecipes, HttpStatus.OK);
 		} else if (currentUser.getRole().equals("ROLE_REGULAR_USER")) {
 			logger.info("Regular user" + currentUser.getName() + " " + currentUser.getLastname() + " is looking at his own cookbook.");
 			RegularUser regularUser = (RegularUser) currentUser;
@@ -107,8 +107,8 @@ public class MyCookBookController {
 						cookbookRecipes.add(new RecipeDTO(recipe));
 					}
 				}
+				return new ResponseEntity<ArrayList<RecipeDTO>>(cookbookRecipes, HttpStatus.OK);
 			}
-			return new ResponseEntity<ArrayList<RecipeDTO>>(new RecipeDTO(cookbookRecipes), HttpStatus.OK);
 		}
 		return new ResponseEntity<RESTError>(new RESTError(2, "Not authorized to update regular user"), HttpStatus.UNAUTHORIZED);
 	}
@@ -123,14 +123,14 @@ public class MyCookBookController {
 		
 		Optional<MyCookBook> myCookBook = cookBookRepository.findById(cookbook_id);
 		
-		if (!myCookBook.isPresent()) {
+		if (!myCookBook.isPresent() && !myCookBook.get().getIsActive()) {
 			logger.info("No cookbook found in the database");
 			return new ResponseEntity<RESTError>(new RESTError(1, "No cookbook found in the database with "+ cookbook_id + " ID."), HttpStatus.NOT_FOUND);
 		}
 		
 		Optional<Recipe> recipe = recipeRepository.findById(recipe_id);
 
-		if (!recipe.isPresent()) {
+		if (!recipe.isPresent() && !recipe.get().getIsActive()) {
 			logger.info("Found recipe in the database");
 			return new ResponseEntity<RESTError>(new RESTError(2, "No recipe found in the database with "+ recipe_id + " ID."), HttpStatus.NOT_FOUND);
 		}
@@ -160,19 +160,20 @@ public class MyCookBookController {
 	@Secured("ROLE_REGULAR_USER")
 	@RequestMapping(method = RequestMethod.PUT, path = "update/cookbook_id/{cookbook_id}/recipe_id/{recipe_id}")
 	public ResponseEntity<?> updateMyCookBook(@PathVariable Integer cookbook_id, @PathVariable Integer recipe_id, Authentication authentication) {
+		
 		String email = (String) authentication.getName();
 		UserEntity currentUser = userRepository.findByEmail(email);
 		
 		Optional<MyCookBook> myCookBook = cookBookRepository.findById(cookbook_id);
 		
-		if (!myCookBook.isPresent()) {
+		if (!myCookBook.isPresent() && !myCookBook.get().getIsActive()) {
 			logger.info("No cookbook found in the database");
 			return new ResponseEntity<RESTError>(new RESTError(1, "No cookbook found in the database with "+ cookbook_id + " ID."), HttpStatus.NOT_FOUND);
 		}
 		
 		Optional<Recipe> recipe = recipeRepository.findById(recipe_id);
 
-		if (!recipe.isPresent()) {
+		if (!recipe.isPresent() && !recipe.get().getIsActive()) {
 			logger.info("Found recipe in the database");
 			return new ResponseEntity<RESTError>(new RESTError(2, "No recipe found in the database with "+ recipe_id + " ID."), HttpStatus.NOT_FOUND);
 		}
@@ -188,7 +189,7 @@ public class MyCookBookController {
 			}
 		}
 
-		return new ResponseEntity<>(myCookBook, HttpStatus.OK);
+		return new ResponseEntity<MyCookBookDTO>(new MyCookBookDTO(myCookBook.get()), HttpStatus.OK);
 	}
 
 	@Secured("ROLE_ADMIN")
@@ -197,13 +198,14 @@ public class MyCookBookController {
 		Optional<MyCookBook> myCookBook = cookBookRepository.findById(id);
 		Optional<RegularUser> regularUser = recipeRepository.findByMyCookBook(myCookBook.get());
 		
-		if (myCookBook.isEmpty()) {
+		if (myCookBook.isEmpty() && !myCookBook.get().getIsActive()) {
 			return new ResponseEntity<RESTError>(new RESTError(1, "There is no cookbook with " + id + " found in the database" ), HttpStatus.NOT_FOUND);
-		}else if (regularUser.isEmpty()) {
+		}else if (regularUser.isEmpty() && !regularUser.get().getIsActive()) {
 			return new ResponseEntity<RESTError>(new RESTError(2, "There is no regular user with " + regularUser.get().getId() + " found in the database" ), HttpStatus.NOT_FOUND);
 		} else {
+			myCookBook.get().setIsActive(false);
 			myCookBook.get().setRegularUser(null);
-			cookBookRepository.delete(myCookBook.get());
+			cookBookRepository.save(myCookBook.get());
 			return new ResponseEntity<>("Deleted successfully!", HttpStatus.OK);
 		}
 	}

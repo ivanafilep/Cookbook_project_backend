@@ -91,7 +91,7 @@ public class IngredientsController {
 			return new ResponseEntity<IngredientsDTO>(new IngredientsDTO(ingredient.get()), HttpStatus.OK);
 		} else {
 			logger.error("No ingredient found in the database.");
-			return new ResponseEntity<RESTError>(new RESTError(1,"No ingredient found with ID " + id), HttpStatus.NOT_FOUND);
+			return new ResponseEntity<RESTError>(new RESTError(1,"No ingredient found with ID " + name), HttpStatus.NOT_FOUND);
 		}
 	}
 
