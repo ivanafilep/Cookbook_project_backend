@@ -2,20 +2,21 @@ package com.praksa.team4.entities.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
 import com.praksa.team4.entities.Allergens;
-import com.praksa.team4.entities.Ingredients;
 import com.praksa.team4.entities.MyCookBook;
 import com.praksa.team4.entities.RegularUser;
 
 public class RegularUserDTO {
-	
+
 	@NotNull(message = "Username must be specified")
 	@Size(min = 2, max = 30, message = "User name must be between {min} and {max} characters long.")
 	private String username;
-		
+
 	@NotNull(message = "Name must be included.")
 	@Size(min = 2, max = 30, message = "Name must be between {min} and {max} characters long.")
 	private String name;
@@ -28,7 +29,7 @@ public class RegularUserDTO {
 	@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.")
 	private String email;
-	
+
 	private MyCookBook myCookBook;
 
 	private List<Allergens> allergens;
