@@ -46,6 +46,9 @@ public class Recipe {
 
 	@Column
 	public String picture;
+	
+	@Column
+	private Boolean isActive;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "chef")
@@ -71,7 +74,7 @@ public class Recipe {
 	public Recipe(Integer id, @NotNull(message = "Name must be included.") String name,
 			@NotNull(message = "Steps must be included.") String steps,
 			@NotNull(message = "Time must be included.") Integer time,
-			@NotNull(message = "Amount must be included.") Integer amount, String picture, Chef chef,
+			@NotNull(message = "Amount must be included.") Integer amount, String picture, Boolean isActive, Chef chef,
 			List<Ingredients> ingredients, List<MyCookBook> myCookBook) {
 		super();
 		this.id = id;
@@ -80,6 +83,7 @@ public class Recipe {
 		this.time = time;
 		this.amount = amount;
 		this.picture = picture;
+		this.isActive = isActive;
 		this.chef = chef;
 		this.ingredients = ingredients;
 		this.myCookBook = myCookBook;
@@ -155,5 +159,13 @@ public class Recipe {
 
 	public void setMyCookBook(List<MyCookBook> myCookBook) {
 		this.myCookBook = myCookBook;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 }
