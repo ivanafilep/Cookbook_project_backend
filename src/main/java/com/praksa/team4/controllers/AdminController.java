@@ -48,24 +48,29 @@ public class AdminController {
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.PUT, path = "/{id}")
 	public ResponseEntity<?> updateAdmin(@PathVariable Integer id, @RequestBody UserDTO updatedAdmin) {
-		Admin admin = adminRepository.findById(id).get();
+		Optional<Admin> admin = adminRepository.findById(id);
 
-		admin.setName(updatedAdmin.getName());
-		admin.setLastname(updatedAdmin.getLastname());
-		admin.setUsername(updatedAdmin.getUsername());
-		admin.setEmail(updatedAdmin.getEmail());
-		admin.setPassword(updatedAdmin.getPassword());
+		if (admin.isEmpty()) {
+			return new ResponseEntity<>("Chef not found in the database", HttpStatus.NOT_FOUND);
+		}
+		
+		admin.get().setName(updatedAdmin.getName());
+		admin.get().setLastname(updatedAdmin.getLastname());
+		admin.get().setUsername(updatedAdmin.getUsername());
+		admin.get().setEmail(updatedAdmin.getEmail());
+		admin.get().setPassword(updatedAdmin.getPassword());
 
-		adminRepository.save(admin);
-		return new ResponseEntity<>(admin, HttpStatus.OK);
+		adminRepository.save(admin.get());
+		return new ResponseEntity<>(admin.get(), HttpStatus.OK);
 	}
 
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
 	public ResponseEntity<?> deleteAdmin(@PathVariable Integer id) {
 		Optional<Admin> admin = adminRepository.findById(id);
+		
 		if (admin.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("Chef not found in the database", HttpStatus.NOT_FOUND);
 		} else {
 			adminRepository.delete(admin.get());
 			return new ResponseEntity<>("Admin je uspesno obrisan", HttpStatus.OK);
