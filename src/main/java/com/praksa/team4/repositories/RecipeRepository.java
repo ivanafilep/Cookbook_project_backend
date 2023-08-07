@@ -1,5 +1,6 @@
 package com.praksa.team4.repositories;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
@@ -16,4 +17,5 @@ public interface RecipeRepository extends CrudRepository<Recipe, Integer> {
 
 	Optional<RegularUser> findByMyCookBook(MyCookBook myCookBook);
 
+	ArrayList<Recipe> findAllByName(String name);
 }
