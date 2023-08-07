@@ -34,7 +34,7 @@ public class IngredientsController {
 	}
 
 	@Secured("ROLE_ADMIN")
-	@RequestMapping(method = RequestMethod.GET, path = "/{id}")
+	@RequestMapping(method = RequestMethod.GET, path = "/id/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id) {
 		return ingredientsService.getById(id);
 	}
@@ -52,6 +52,12 @@ public class IngredientsController {
 	}
 
 	@Secured("ROLE_ADMIN")
+	@RequestMapping(method = RequestMethod.PUT, path = "/{id}")
+	public ResponseEntity<?> updateIngredient(@PathVariable Integer id, @RequestBody IngredientsDTO updatedIngredient) {
+		return ingredientsService.updateIngredient(id, updatedIngredient);
+	}
+	
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.PUT, path = "ingredient_id/{ingredient_id}/allergen_id/{allergen_id}")
 	public ResponseEntity<?> addAllergenToIngredient(@PathVariable Integer ingredient_id,
 			@PathVariable Integer allergen_id) {
@@ -62,12 +68,6 @@ public class IngredientsController {
 	@RequestMapping(method = RequestMethod.PUT, path = "ingredient_id/{ingredient_id}")
 	public ResponseEntity<?> deleteAllergenFromIngredient(@PathVariable Integer ingredient_id) {
 		return ingredientsService.deleteAllergenFromIngredient(ingredient_id);
-	}
-
-	@Secured("ROLE_ADMIN")
-	@RequestMapping(method = RequestMethod.PUT, path = "/{id}")
-	public ResponseEntity<?> updateIngredient(@PathVariable Integer id, @RequestBody IngredientsDTO updatedIngredient) {
-		return ingredientsService.updateIngredient(id, updatedIngredient);
 	}
 
 	@Secured("ROLE_ADMIN")

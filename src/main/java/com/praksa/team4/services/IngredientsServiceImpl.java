@@ -97,7 +97,7 @@ public class IngredientsServiceImpl implements IngredientsService {
 		Optional<Ingredients> existingIngredient = ingredientsRepository.findByName(newIngredient.getName());
 		logger.info("Finding out whether there's an existing ingredient with the same name.");
 
-		if (existingIngredient != null) {
+		if (existingIngredient.isPresent() && existingIngredient.get().getIsActive()) {
 			logger.error("There is an ingredient with the same name.");
 			return new ResponseEntity<RESTError>(new RESTError(2, "Ingredient with that name already exists"),
 					HttpStatus.CONFLICT);
@@ -126,6 +126,33 @@ public class IngredientsServiceImpl implements IngredientsService {
 		logger.info("Saving ingredient to the database");
 
 		return new ResponseEntity<IngredientsDTO>(new IngredientsDTO(ingredient), HttpStatus.CREATED);
+	}
+	
+	public ResponseEntity<?> updateIngredient(@PathVariable Integer id, @RequestBody IngredientsDTO updatedIngredient) {
+
+		Optional<Ingredients> ingredient = ingredientsRepository.findById(id);
+
+		if (ingredient.isEmpty() || !ingredient.get().getIsActive()) {
+			logger.error("There isn't an ingredient with id" + id + " in the database.");
+			return new ResponseEntity<RESTError>(new RESTError(1, "No ingredient found with ID " + id),
+					HttpStatus.NOT_FOUND);
+		}
+
+		ingredient.get().setName(updatedIngredient.getName());
+		ingredient.get().setUnit(updatedIngredient.getUnit());
+		ingredient.get().setCalories(updatedIngredient.getCalories());
+		ingredient.get().setCarbs(updatedIngredient.getCarbs());
+		ingredient.get().setFats(updatedIngredient.getFats());
+		ingredient.get().setSugars(updatedIngredient.getSugars());
+		ingredient.get().setProteins(updatedIngredient.getProteins());
+		ingredient.get().setSaturatedFats(updatedIngredient.getSaturatedFats());
+		ingredient.get().setAllergen(updatedIngredient.getAllergen());
+		logger.info("Updating ingredient parameters.");
+
+		ingredientsRepository.save(ingredient.get());
+		logger.info("Saving ingredient");
+
+		return new ResponseEntity<IngredientsDTO>(new IngredientsDTO(ingredient.get()), HttpStatus.OK);
 	}
 
 	public ResponseEntity<?> addAllergenToIngredient(@PathVariable Integer ingredient_id,
@@ -167,33 +194,6 @@ public class IngredientsServiceImpl implements IngredientsService {
 
 		ingredient.get().setAllergen(null);
 		logger.info("Deleting allergen from ingredient");
-		ingredientsRepository.save(ingredient.get());
-		logger.info("Saving ingredient");
-
-		return new ResponseEntity<IngredientsDTO>(new IngredientsDTO(ingredient.get()), HttpStatus.OK);
-	}
-
-	public ResponseEntity<?> updateIngredient(@PathVariable Integer id, @RequestBody IngredientsDTO updatedIngredient) {
-
-		Optional<Ingredients> ingredient = ingredientsRepository.findById(id);
-
-		if (ingredient.isEmpty() || !ingredient.get().getIsActive()) {
-			logger.error("There isn't an ingredient with id" + id + " in the database.");
-			return new ResponseEntity<RESTError>(new RESTError(1, "No ingredient found with ID " + id),
-					HttpStatus.NOT_FOUND);
-		}
-
-		ingredient.get().setName(updatedIngredient.getName());
-		ingredient.get().setUnit(updatedIngredient.getUnit());
-		ingredient.get().setCalories(updatedIngredient.getCalories());
-		ingredient.get().setCarbs(updatedIngredient.getCarbs());
-		ingredient.get().setFats(updatedIngredient.getFats());
-		ingredient.get().setSugars(updatedIngredient.getSugars());
-		ingredient.get().setProteins(updatedIngredient.getProteins());
-		ingredient.get().setSaturatedFats(updatedIngredient.getSaturatedFats());
-		ingredient.get().setAllergen(updatedIngredient.getAllergen());
-		logger.info("Updating ingredient parameters.");
-
 		ingredientsRepository.save(ingredient.get());
 		logger.info("Saving ingredient");
 
