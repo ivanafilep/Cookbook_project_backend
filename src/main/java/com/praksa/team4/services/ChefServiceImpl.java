@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,9 @@ public class ChefServiceImpl implements ChefService {
 
 	@Autowired
 	UserCustomValidator userValidator;
+	
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
@@ -95,7 +99,7 @@ public class ChefServiceImpl implements ChefService {
 		Chef newChef = new Chef();
 
 		newChef.setUsername(chef.getUsername());
-		newChef.setPassword(chef.getPassword());
+		newChef.setPassword(passwordEncoder.encode(chef.getPassword()));
 		newChef.setName(chef.getName());
 		newChef.setLastname(chef.getLastname());
 		newChef.setEmail(chef.getEmail());

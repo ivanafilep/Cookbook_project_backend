@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +47,9 @@ public class RegularUserServiceImpl implements RegularUserService {
 
 	@Autowired
 	UserCustomValidator userValidator;
+	
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
@@ -93,7 +97,6 @@ public class RegularUserServiceImpl implements RegularUserService {
 		UserEntity existingUserWithUsername = userRepository.findByUsername(newUser.getUsername());
 		logger.info("Finding out whether there's a user with the same username.");
 
-		// TODO provera != da l radi posao
 		if (existingUserWithEmail != null) {
 			logger.error("There is a user with the same email.");
 			return new ResponseEntity<RESTError>(new RESTError(1, "Email already exists"), HttpStatus.CONFLICT);
@@ -110,7 +113,7 @@ public class RegularUserServiceImpl implements RegularUserService {
 		newRegularUser.setLastname(newUser.getLastname());
 		newRegularUser.setUsername(newUser.getUsername());
 		newRegularUser.setEmail(newUser.getEmail());
-		newRegularUser.setPassword(newUser.getPassword());
+		newRegularUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 		newRegularUser.setIsActive(true);
 		newRegularUser.setRole("ROLE_REGULAR_USER");
 		newRegularUser.setAllergens(new ArrayList<Allergens>());
