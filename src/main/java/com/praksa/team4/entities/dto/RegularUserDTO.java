@@ -29,6 +29,14 @@ public class RegularUserDTO {
 	@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.")
 	private String email;
+	
+//	@Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d).{8,}$", message =
+//		 	"Password must be at least 8 characters long and contain a lowercase, an upercase letter and a number")
+		 	@NotNull(message = "Password must be specified")
+			@Size(min = 8, max = 100, message = "Password must be between {min} and {max} characters long.")
+			private String password;
+	
+	private String confirmed_password;
 
 	private MyCookBook myCookBook;
 
@@ -46,6 +54,7 @@ public class RegularUserDTO {
 		this.email = r.getEmail();
 		this.myCookBook = r.getMyCookBook();
 		this.allergens = new ArrayList<>();
+		this.password = r.getPassword();
 		for (Allergens a : r.getAllergens()) {
 			this.allergens.add(a);
 		}
@@ -98,4 +107,21 @@ public class RegularUserDTO {
 	public void setAllergens(List<Allergens> allergens) {
 		this.allergens = allergens;
 	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getConfirmed_password() {
+		return confirmed_password;
+	}
+
+	public void setConfirmed_password(String confirmed_password) {
+		this.confirmed_password = confirmed_password;
+	}
+	
 }

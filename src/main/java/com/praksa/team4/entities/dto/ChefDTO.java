@@ -27,6 +27,14 @@ public class ChefDTO {
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.")
 	private String email;
 	
+//	@Pattern(regexp = "^(?=.[0-9])(?=.[a-z])(?=.*[A-Z]).{8,100}$", message =
+//		 	"Password must be at least 8 characters long and contain a lowercase, an upercase letter and a number")
+		 	@NotNull(message = "Password must be specified")
+			@Size(min = 8, max = 100, message = "Password must be between {min} and {max} characters long.")
+			private String password;
+	
+	private String confirmed_password;
+	
 	public List<Recipe> recipes;
 
 	public ChefDTO() {
@@ -40,6 +48,7 @@ public class ChefDTO {
 		this.lastname = c.getLastname();
 		this.email = c.getEmail();
 		this.recipes = c.getRecipes();
+		this.password = c.getPassword();
 	}
 
 	public String getUsername() {
@@ -81,4 +90,21 @@ public class ChefDTO {
 	public void setRecipes(List<Recipe> recipes) {
 		this.recipes = recipes;
 	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getConfirmed_password() {
+		return confirmed_password;
+	}
+
+	public void setConfirmed_password(String confirmed_password) {
+		this.confirmed_password = confirmed_password;
+	}
+	
 }
