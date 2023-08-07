@@ -10,11 +10,10 @@ public class UserDTO {
 	@Size(min = 2, max = 30, message = "User name must be between {min} and {max} characters long.")
 	private String username;
 
-// 	@Pattern(regexp = "^(?=.[0-9])(?=.[a-z])(?=.*[A-Z]).{8,100}$", message =
-// 	"Password must be at least 8 characters long and contain a lowercase, an
-// 	upercase letter and a number")
-// 	@NotNull(message = "Password must be specified")
-//	@Size(min = 8, max = 100, message = "Password must be between {min} and {max} characters long.")
+// 	@Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d).{8,}$", message =
+// 	"Password must be at least 8 characters long and contain a lowercase, an upercase letter and a number")
+ 	@NotNull(message = "Password must be specified")
+	@Size(min = 8, max = 100, message = "Password must be between {min} and {max} characters long.")
 	private String password;
 	
 	private String confirmed_password;

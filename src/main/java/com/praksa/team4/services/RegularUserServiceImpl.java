@@ -113,12 +113,14 @@ public class RegularUserServiceImpl implements RegularUserService {
 		newRegularUser.setPassword(newUser.getPassword());
 		newRegularUser.setIsActive(true);
 		newRegularUser.setRole("ROLE_REGULAR_USER");
+		newRegularUser.setAllergens(new ArrayList<Allergens>());
 		logger.info("Setting users role.");
 
 		regularUserRepository.save(newRegularUser);
-		logger.info("Saving student to the database");
+		logger.info("Saving regular user to the database");
 
 		MyCookBook myCookBook = new MyCookBook();
+		myCookBook.setIsActive(true);
 		myCookBook.setRegularUser(newRegularUser);
 		logger.info("My cookbook" + myCookBook);
 		newRegularUser.setMyCookBook(myCookBook);
