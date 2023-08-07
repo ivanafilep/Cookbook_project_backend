@@ -68,7 +68,7 @@ public class RecipeController {
 
 	@RequestMapping(method = RequestMethod.GET, path = "/by_name")
 	public ResponseEntity<?> getRecipeByName(@RequestParam String name) {
-		return recipeService.getRecipeByName(name);
+		return recipeService.getAllRecipeByName(name);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, path = "/{id}")

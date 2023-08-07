@@ -277,15 +277,23 @@ public class RecipeServiceImpl implements RecipeService {
 				HttpStatus.UNAUTHORIZED);
 	}
 
-	public ResponseEntity<?> getRecipeByName(@RequestParam String name) {
-		Optional<Recipe> recipe = recipeRepository.findByName(name);
+	public ResponseEntity<?> getAllRecipeByName(@RequestParam String name) {
+	        ArrayList<Recipe> recipes = recipeRepository.findAllByName(name);
 
-		if (recipe.isEmpty() || !recipe.get().getIsActive()) {
-			return new ResponseEntity<RESTError>(new RESTError(1, "Recipe not found with name: " + name + "."),
-					HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<RecipeDTO>(new RecipeDTO(recipe.get()), HttpStatus.OK);
-	}
+	        if (recipes.isEmpty()) {
+	            return new ResponseEntity<RESTError>(new RESTError(1, "Recipes not found with name: " + name + "."),
+	                    HttpStatus.NOT_FOUND);
+	        } else {   
+	        	ArrayList<RecipeDTO> activeRecipes = new ArrayList<>(); 
+	        	for (Recipe recipe : recipes) {
+	        		if (recipe.getIsActive()) {
+	        			activeRecipes.add(new RecipeDTO(recipe));
+	        			} 
+	        		}
+	        	return new ResponseEntity<ArrayList<RecipeDTO>>(activeRecipes, HttpStatus.OK);
+	        }
+	        
+	    }
 
 	public ResponseEntity<?> getRecipeById(@PathVariable Integer id) {
 		Optional<Recipe> recipe = recipeRepository.findById(id);
