@@ -34,7 +34,7 @@ public class AllergensController {
 	}
 
 	@Secured("ROLE_ADMIN")
-	@RequestMapping(method = RequestMethod.GET, path = "/{id}")
+	@RequestMapping(method = RequestMethod.GET, path = "/id/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id) {
 		return allergensService.getById(id);
 	}

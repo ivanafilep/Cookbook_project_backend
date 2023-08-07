@@ -129,15 +129,18 @@ public class AllergensServiceImpl implements AllergensService {
 
 		if (allergen.isEmpty() || !allergen.get().getIsActive()) {
 			logger.error("No allergen with " + id + " found.");
-			return new ResponseEntity<RESTError>(new RESTError(1, "No allergen with " + id + " found."),
-					HttpStatus.NOT_FOUND);
-		} else if (!allergen.get().getIngredient().isEmpty()) {
-			for (Ingredients ingredient : allergen.get().getIngredient()) {
-				if (ingredient.getIsActive()) {
-					ingredient.setAllergen(null);
-					logger.info("For each ingredient set allergen null, while deleting that allergen.");
-					ingredientsRepository.save(ingredient);
-					logger.info("Saving ingredient.");
+			return new ResponseEntity<RESTError>(new RESTError(1, "No allergen with " + id + " found."), HttpStatus.NOT_FOUND);
+		} 
+		
+		if (allergen.isPresent()) {
+			if(!allergen.get().getIngredient().isEmpty()) {
+				for (Ingredients ingredient : allergen.get().getIngredient()) {
+					if (ingredient.getIsActive()) {
+						ingredient.setAllergen(null);
+						logger.info("For each ingredient set allergen null, while deleting that allergen.");
+						ingredientsRepository.save(ingredient);
+						logger.info("Saving ingredient.");
+					}
 				}
 			}
 			allergen.get().setIsActive(false);
@@ -147,6 +150,6 @@ public class AllergensServiceImpl implements AllergensService {
 			logger.info("Deleting allergen from database.");
 		}
 
-		return new ResponseEntity<>("Allergen has been successfully deleted", HttpStatus.OK);
+		return new ResponseEntity<>("Allergen with name: " + allergen.get().getName() + " has been successfully deleted", HttpStatus.OK);
 	}
 }

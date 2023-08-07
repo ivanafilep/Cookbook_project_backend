@@ -37,7 +37,7 @@ public class Allergens {
 	private String icon;
 
 	@Column
-	private Boolean isActive;
+	private boolean isActive;
 	
 	// TODO static folder urls
 
@@ -54,7 +54,7 @@ public class Allergens {
 	private List<RegularUser> regularUsers;
 
 	public Allergens(Integer id, @NotNull(message = "Name must be included.") String name,
-			@NotNull(message = "Icon must be included.") String icon, Boolean isActive, List<Ingredients> ingredient,
+			@NotNull(message = "Icon must be included.") String icon, boolean isActive, List<Ingredients> ingredient,
 			List<RegularUser> regularUsers) {
 		super();
 		this.id = id;
