@@ -111,6 +111,7 @@ public class RegularUserServiceImpl implements RegularUserService {
 		newRegularUser.setUsername(newUser.getUsername());
 		newRegularUser.setEmail(newUser.getEmail());
 		newRegularUser.setPassword(newUser.getPassword());
+		newRegularUser.setIsActive(true);
 		newRegularUser.setRole("ROLE_REGULAR_USER");
 		logger.info("Setting users role.");
 
