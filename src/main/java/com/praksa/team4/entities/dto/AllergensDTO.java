@@ -5,6 +5,8 @@ import com.praksa.team4.entities.Allergens;
 
 public class AllergensDTO {
 
+	private Integer id;
+	
 	@NotNull(message = "Name must be included.")
 	public String name;
 
@@ -21,6 +23,14 @@ public class AllergensDTO {
 		this.icon = a.getIcon();
 	}
 
+	public AllergensDTO(Integer id, @NotNull(message = "Name must be included.") String name,
+			@NotNull(message = "Icon must be included.") String icon) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.icon = icon;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -35,6 +45,14 @@ public class AllergensDTO {
 
 	public void setIcon(String icon) {
 		this.icon = icon;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

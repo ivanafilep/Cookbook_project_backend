@@ -6,6 +6,8 @@ import javax.validation.constraints.Size;
 
 public class UserDTO {
 
+	private Integer id;
+	
 	@NotNull(message = "Username must be specified")
 	@Size(min = 2, max = 30, message = "User name must be between {min} and {max} characters long.")
 	private String username;
@@ -37,14 +39,18 @@ public class UserDTO {
 		super();
 	}
 
-	public UserDTO(
+	
+
+	public UserDTO(Integer id,
 			@NotNull(message = "Username must be specified") @Size(min = 2, max = 30, message = "User name must be between {min} and {max} characters long.") String username,
-			String password, String confirmed_password,
+			@NotNull(message = "Password must be specified") @Size(min = 8, max = 100, message = "Password must be between {min} and {max} characters long.") String password,
+			String confirmed_password,
 			@NotNull(message = "Name must be included.") @Size(min = 2, max = 30, message = "Name must be between {min} and {max} characters long.") String name,
 			@NotNull(message = "Lastname must be included.") @Size(min = 2, max = 30, message = "Lastname must be between {min} and {max} characters long.") String lastname,
 			@NotNull(message = "Email must be included.") @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.") String email,
 			String role) {
 		super();
+		this.id = id;
 		this.username = username;
 		this.password = password;
 		this.confirmed_password = confirmed_password;
@@ -53,6 +59,8 @@ public class UserDTO {
 		this.email = email;
 		this.role = role;
 	}
+
+
 
 	public String getUsername() {
 		return username;
@@ -109,4 +117,17 @@ public class UserDTO {
 	public void setConfirmed_password(String confirmed_password) {
 		this.confirmed_password = confirmed_password;
 	}
+
+
+
+	public Integer getId() {
+		return id;
+	}
+
+
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
 }
