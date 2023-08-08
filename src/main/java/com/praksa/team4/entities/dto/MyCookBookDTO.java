@@ -16,10 +16,10 @@ public class MyCookBookDTO {
 
 	
 
-	public MyCookBookDTO(Integer id, List<Recipe> recipes) {
+	public MyCookBookDTO(MyCookBook mcb) {
 		super();
-		this.id = id;
-		this.recipes = recipes;
+		this.id = mcb.getId();
+		this.recipes = mcb.getRecipes();
 	}
 
 

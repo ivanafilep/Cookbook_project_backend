@@ -19,17 +19,11 @@ public class AllergensDTO {
 
 	public AllergensDTO(Allergens a) {
 		super();
+		this.id = a.getId();
 		this.name = a.getName();
 		this.icon = a.getIcon();
 	}
 
-	public AllergensDTO(Integer id, @NotNull(message = "Name must be included.") String name,
-			@NotNull(message = "Icon must be included.") String icon) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.icon = icon;
-	}
 
 	public String getName() {
 		return name;

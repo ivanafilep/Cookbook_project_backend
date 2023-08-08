@@ -49,23 +49,19 @@ public class RegularUserDTO {
 	}
 
 	
-	public RegularUserDTO(Integer id,
-			@NotNull(message = "Username must be specified") @Size(min = 2, max = 30, message = "User name must be between {min} and {max} characters long.") String username,
-			@NotNull(message = "Name must be included.") @Size(min = 2, max = 30, message = "Name must be between {min} and {max} characters long.") String name,
-			@NotNull(message = "Lastname must be included.") @Size(min = 2, max = 30, message = "Lastname must be between {min} and {max} characters long.") String lastname,
-			@NotNull(message = "Email must be included.") @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.") String email,
-			@NotNull(message = "Password must be specified") @Size(min = 8, max = 100, message = "Password must be between {min} and {max} characters long.") String password,
-			String confirmed_password, MyCookBook myCookBook, List<Allergens> allergens) {
+	public RegularUserDTO(RegularUser r) {
 		super();
-		this.id = id;
-		this.username = username;
-		this.name = name;
-		this.lastname = lastname;
-		this.email = email;
-		this.password = password;
-		this.confirmed_password = confirmed_password;
-		this.myCookBook = myCookBook;
-		this.allergens = allergens;
+		this.id = r.getId();
+		this.username = r.getUsername();
+		this.name = r.getName();
+		this.lastname = r.getLastname();
+		this.email = r.getEmail();
+		this.myCookBook = r.getMyCookBook();
+		this.allergens = new ArrayList<>();
+		this.password = r.getPassword();
+		for (Allergens a : r.getAllergens()) {
+			this.allergens.add(a);
+		}
 	}
 
 	public String getUsername() {
