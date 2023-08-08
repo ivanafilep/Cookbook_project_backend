@@ -11,6 +11,8 @@ import com.praksa.team4.entities.Recipe;
 
 public class RecipeDTO {
 
+	private Integer id;
+	
 	@NotNull(message = "Name must be included.")
 	public String name;
 
@@ -33,19 +35,23 @@ public class RecipeDTO {
 		super();
 	}
 
-	public RecipeDTO(Recipe r) {
+	
+	public RecipeDTO(Integer id, @NotNull(message = "Name must be included.") String name,
+			@NotNull(message = "Steps must be included.") String steps,
+			@NotNull(message = "Time must be included.") Integer time,
+			@NotNull(message = "Amount must be included.") Integer amount, String picture, Chef chefId,
+			List<Ingredients> ingredients) {
 		super();
-		this.name = r.getName();
-		this.steps = r.getSteps();
-		this.time = r.getTime();
-		this.amount = r.getAmount();
-		this.picture = r.getPicture();
-		this.chefId = r.getChef();
-		this.ingredients = new ArrayList<>();
-		for (Ingredients i : r.getIngredients()) {
-			this.ingredients.add(i);
-		}
+		this.id = id;
+		this.name = name;
+		this.steps = steps;
+		this.time = time;
+		this.amount = amount;
+		this.picture = picture;
+		this.chefId = chefId;
+		this.ingredients = ingredients;
 	}
+
 
 	public String getName() {
 		return name;
@@ -101,6 +107,16 @@ public class RecipeDTO {
 
 	public void setIngredients(List<Ingredients> ingredients) {
 		this.ingredients = ingredients;
+	}
+
+
+	public Integer getId() {
+		return id;
+	}
+
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

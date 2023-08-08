@@ -7,15 +7,22 @@ import com.praksa.team4.entities.Recipe;
 
 public class MyCookBookDTO {
 
+	private Integer id;
+	
 	private List<Recipe> recipes;
 
 	public MyCookBookDTO() {
 	}
 
-	public MyCookBookDTO(MyCookBook mcb) {
+	
+
+	public MyCookBookDTO(Integer id, List<Recipe> recipes) {
 		super();
-		this.recipes = mcb.getRecipes();
+		this.id = id;
+		this.recipes = recipes;
 	}
+
+
 
 	public List<Recipe> getRecipes() {
 		return recipes;
@@ -23,6 +30,18 @@ public class MyCookBookDTO {
 
 	public void setRecipes(List<Recipe> recipes) {
 		this.recipes = recipes;
+	}
+
+
+
+	public Integer getId() {
+		return id;
+	}
+
+
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }
