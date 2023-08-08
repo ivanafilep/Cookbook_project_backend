@@ -13,6 +13,9 @@ public class IngredientsDTO {
 
 	@NotNull(message = "Unit must be included.")
 	public String unit;
+	
+	@NotNull(message = "Amount must be included.")
+	public Integer amount;
 
 	@NotNull(message = "Calories must be included.")
 	public Float calories;
@@ -39,6 +42,7 @@ public class IngredientsDTO {
 		this.id = i.getId();
 		this.name = i.getName();
 		this.unit = i.getUnit();
+		this.amount = i.getAmount();
 		this.calories = i.getCalories();
 		this.carbs = i.getCarbs();
 		this.fats = i.getFats();
@@ -133,5 +137,19 @@ public class IngredientsDTO {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+
+
+	public Integer getAmount() {
+		return amount;
+	}
+
+
+
+	public void setAmount(Integer amount) {
+		this.amount = amount;
+	}
+	
+	
 
 }
