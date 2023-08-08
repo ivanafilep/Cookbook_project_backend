@@ -6,6 +6,8 @@ import com.praksa.team4.entities.Ingredients;
 
 public class IngredientsDTO {
 
+	private Integer id;
+	
 	@NotNull(message = "Name must be included.")
 	public String name;
 
@@ -30,18 +32,26 @@ public class IngredientsDTO {
 	public IngredientsDTO() {
 	}
 
-	public IngredientsDTO(Ingredients i) {
+	
+
+	public IngredientsDTO(Integer id, @NotNull(message = "Name must be included.") String name,
+			@NotNull(message = "Unit must be included.") String unit,
+			@NotNull(message = "Calories must be included.") Float calories, Float carbs, Float fats, Float sugars,
+			Float proteins, Float saturatedFats, Allergens allergen) {
 		super();
-		this.name = i.getName();
-		this.unit = i.getUnit();
-		this.calories = i.getCalories();
-		this.carbs = i.getCarbs();
-		this.fats = i.getFats();
-		this.sugars = i.getSugars();
-		this.proteins = i.getProteins();
-		this.saturatedFats = i.getSaturatedFats();
-		this.allergen = i.getAllergen();
+		this.id = id;
+		this.name = name;
+		this.unit = unit;
+		this.calories = calories;
+		this.carbs = carbs;
+		this.fats = fats;
+		this.sugars = sugars;
+		this.proteins = proteins;
+		this.saturatedFats = saturatedFats;
+		this.allergen = allergen;
 	}
+
+
 
 	public String getName() {
 		return name;
@@ -113,6 +123,18 @@ public class IngredientsDTO {
 
 	public void setAllergen(Allergens allergen) {
 		this.allergen = allergen;
+	}
+
+
+
+	public Integer getId() {
+		return id;
+	}
+
+
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

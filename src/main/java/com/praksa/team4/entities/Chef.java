@@ -43,6 +43,12 @@ public class Chef extends UserEntity {
 		this.isActive = isActive;
 	}
 
+	public Chef(Integer id, List<Recipe> recipes, Boolean isActive) {
+		super();
+		this.recipes = recipes;
+		this.isActive = isActive;
+	}
+
 	public List<Recipe> getRecipes() {
 		return recipes;
 	}
