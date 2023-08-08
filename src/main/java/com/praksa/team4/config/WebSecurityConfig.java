@@ -45,6 +45,7 @@ public class WebSecurityConfig {
 				.addFilterAfter(new JWTAuthorizationFilter(secretKey), UsernamePasswordAuthenticationFilter.class)
 				.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/cookbook/login").permitAll()
+				.antMatchers(HttpMethod.GET, "/project/recipe").permitAll()
 				.anyRequest().authenticated();
 		return http.build();
 	}
