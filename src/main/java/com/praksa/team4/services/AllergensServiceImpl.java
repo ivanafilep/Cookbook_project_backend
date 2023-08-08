@@ -9,15 +9,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.praksa.team4.entities.Allergens;
 import com.praksa.team4.entities.Ingredients;
+import com.praksa.team4.entities.RegularUser;
+import com.praksa.team4.entities.UserEntity;
 import com.praksa.team4.entities.dto.AllergensDTO;
 import com.praksa.team4.repositories.AllergensRepository;
 import com.praksa.team4.repositories.IngredientsRepository;
+import com.praksa.team4.repositories.UserRepository;
 import com.praksa.team4.util.ErrorMessageHelper;
 import com.praksa.team4.util.RESTError;
 import com.praksa.team4.util.UserCustomValidator;
@@ -32,8 +36,11 @@ public class AllergensServiceImpl implements AllergensService {
 	private IngredientsRepository ingredientsRepository;
 
 	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
 	UserCustomValidator userValidator;
-	
+
 	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
 	public ResponseEntity<?> getAll() {
@@ -129,11 +136,12 @@ public class AllergensServiceImpl implements AllergensService {
 
 		if (allergen.isEmpty() || !allergen.get().getIsActive()) {
 			logger.error("No allergen with " + id + " found.");
-			return new ResponseEntity<RESTError>(new RESTError(1, "No allergen with " + id + " found."), HttpStatus.NOT_FOUND);
-		} 
-		
+			return new ResponseEntity<RESTError>(new RESTError(1, "No allergen with " + id + " found."),
+					HttpStatus.NOT_FOUND);
+		}
+
 		if (allergen.isPresent()) {
-			if(!allergen.get().getIngredient().isEmpty()) {
+			if (!allergen.get().getIngredient().isEmpty()) {
 				for (Ingredients ingredient : allergen.get().getIngredient()) {
 					if (ingredient.getIsActive()) {
 						ingredient.setAllergen(null);
@@ -150,6 +158,34 @@ public class AllergensServiceImpl implements AllergensService {
 			logger.info("Deleting allergen from database.");
 		}
 
-		return new ResponseEntity<>("Allergen with name: " + allergen.get().getName() + " has been successfully deleted", HttpStatus.OK);
+		return new ResponseEntity<>(
+				"Allergen with name: " + allergen.get().getName() + " has been successfully deleted", HttpStatus.OK);
+	}
+
+	public ResponseEntity<?> getAllergensByUser(Authentication authentication) {
+
+		String signedInUserEmail = authentication.getName();
+		UserEntity currentUser = userRepository.findByEmail(signedInUserEmail);
+
+		if (currentUser.getRole().equals("ROLE_REGULAR_USER")) {
+			RegularUser regularUser = (RegularUser) currentUser;
+
+			List<Allergens> allergens = (List<Allergens>) allergensRepository.findAllByRegularUsers(regularUser);
+
+			if (allergens.isEmpty()) {
+				logger.error("No allergens found in the database.");
+				return new ResponseEntity<RESTError>(new RESTError(1, "No allergens found"), HttpStatus.NOT_FOUND);
+			} else {
+				ArrayList<AllergensDTO> activeAllergens = new ArrayList<>();
+				for (Allergens allergenDB : allergens) {
+					if (allergenDB.getIsActive()) {
+						activeAllergens.add(new AllergensDTO(allergenDB));
+					}
+				}
+				logger.info("Found allergens in the database");
+				return new ResponseEntity<ArrayList<AllergensDTO>>(activeAllergens, HttpStatus.OK);
+			}
+		}
+		return new ResponseEntity<RESTError>(new RESTError(2, "Not autorized user"), HttpStatus.UNAUTHORIZED);
 	}
 }

@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +33,12 @@ public class AllergensController {
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAll() {
 		return allergensService.getAll();
+	}
+	
+	@Secured("ROLE_REGULAR_USER")
+	@RequestMapping(method = RequestMethod.GET, path = "/userAllergens")
+	public ResponseEntity<?> getAllergensByUser(Authentication authentication) {
+		return allergensService.getAllergensByUser(authentication);
 	}
 
 	@Secured("ROLE_ADMIN")

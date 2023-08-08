@@ -218,13 +218,15 @@ public class RegularUserServiceImpl implements RegularUserService {
 			logger.info("Regular user" + currentUser.getName() + " " + currentUser.getLastname()
 					+ " is adding allergen to his own profile.");
 			RegularUser loggedInUser = (RegularUser) currentUser;
-			if (loggedInUser.getId().equals(currentUser.getId())
-					&& !regularUser.get().getAllergens().contains(allergen.get())) {
+			if (loggedInUser.getId().equals(regularUser.get().getId())) {
+				if (!regularUser.get().getAllergens().contains(allergen.get())) {
 				regularUser.get().getAllergens().add(allergen.get());
-			}
+				}
+			
 			regularUserRepository.save(regularUser.get());
 
 			return new ResponseEntity<RegularUserDTO>(new RegularUserDTO(regularUser.get()), HttpStatus.CREATED);
+			}
 		}
 
 		return new ResponseEntity<RESTError>(new RESTError(3, "Not authorized to update regular user"),
@@ -266,7 +268,7 @@ public class RegularUserServiceImpl implements RegularUserService {
 			logger.info("Regular user" + currentUser.getName() + " " + currentUser.getLastname()
 					+ " is adding allergen to his own profile.");
 			RegularUser loggedInUser = (RegularUser) currentUser;
-			if (loggedInUser.getId().equals(currentUser.getId())
+			if (loggedInUser.getId().equals(regularUser.get().getId())
 					&& !regularUser.get().getAllergens().contains(allergen.get())) {
 				regularUser.get().getAllergens().remove(allergen.get());
 			}
@@ -307,7 +309,7 @@ public class RegularUserServiceImpl implements RegularUserService {
 			logger.info("Regular user" + currentUser.getName() + " " + currentUser.getLastname()
 					+ " is deleting his own profile.");
 			RegularUser loggedInUser = (RegularUser) currentUser;
-			if (loggedInUser.getId().equals(currentUser.getId())) {
+			if (loggedInUser.getId().equals(regularUser.get().getId())) {
 				regularUser.get().setIsActive(false);
 				regularUser.get().setMyCookBook(null);
 				regularUserRepository.save(regularUser.get());
