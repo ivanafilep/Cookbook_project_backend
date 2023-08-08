@@ -107,6 +107,7 @@ public class IngredientsServiceImpl implements IngredientsService {
 
 		ingredient.setName(newIngredient.getName());
 		ingredient.setUnit(newIngredient.getUnit());
+		ingredient.setAmount(0);
 		ingredient.setCalories(newIngredient.getCalories());
 		ingredient.setCarbs(newIngredient.getCarbs());
 		ingredient.setFats(newIngredient.getFats());
@@ -140,6 +141,7 @@ public class IngredientsServiceImpl implements IngredientsService {
 
 		ingredient.get().setName(updatedIngredient.getName());
 		ingredient.get().setUnit(updatedIngredient.getUnit());
+		//ingredient.get().setAmount(updatedIngredient.getAmount());
 		ingredient.get().setCalories(updatedIngredient.getCalories());
 		ingredient.get().setCarbs(updatedIngredient.getCarbs());
 		ingredient.get().setFats(updatedIngredient.getFats());
@@ -168,7 +170,7 @@ public class IngredientsServiceImpl implements IngredientsService {
 
 		Optional<Allergens> allergen = allergensRepository.findById(allergen_id);
 
-		if (allergen.isEmpty() || !ingredient.get().getIsActive()) {
+		if (allergen.isEmpty() || !allergen.get().getIsActive()) {
 			logger.error("There isn't an allergen with id " + ingredient_id + " in the database.");
 			return new ResponseEntity<RESTError>(new RESTError(2, "Allergen with that id is not in the database."),
 					HttpStatus.NOT_FOUND);
