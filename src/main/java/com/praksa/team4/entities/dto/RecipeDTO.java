@@ -36,22 +36,20 @@ public class RecipeDTO {
 	}
 
 	
-	public RecipeDTO(Integer id, @NotNull(message = "Name must be included.") String name,
-			@NotNull(message = "Steps must be included.") String steps,
-			@NotNull(message = "Time must be included.") Integer time,
-			@NotNull(message = "Amount must be included.") Integer amount, String picture, Chef chefId,
-			List<Ingredients> ingredients) {
+	public RecipeDTO(Recipe r) {
 		super();
-		this.id = id;
-		this.name = name;
-		this.steps = steps;
-		this.time = time;
-		this.amount = amount;
-		this.picture = picture;
-		this.chefId = chefId;
-		this.ingredients = ingredients;
+		this.id =r.getId();
+		this.name = r.getName();
+		this.steps = r.getSteps();
+		this.time = r.getTime();
+		this.amount = r.getAmount();
+		this.picture = r.getPicture();
+		this.chefId = r.getChef();
+		this.ingredients = new ArrayList<>();
+		for (Ingredients i : r.getIngredients()) {
+			this.ingredients.add(i);
+		}
 	}
-
 
 	public String getName() {
 		return name;
