@@ -123,15 +123,20 @@ public class RecipeServiceImpl implements RecipeService {
 			recipe.setPicture(newRecipe.getPicture());
 			recipe.setIsActive(true);
 			recipe.setChef(chef);
+			
 			List<Ingredients> listIngredients = new ArrayList<>();
 			for (Ingredients ingredients : newRecipe.getIngredients()) {
-				if (ingredients.getIsActive()) {
+				if (ingredients.getIsActive() != null && ingredients.getIsActive()) {
 					Ingredients newIngredients = ingredientsRepository.findById(ingredients.getId()).get();
+					ingredients.setAmount(ingredients.getAmount()); // TODO kako se unosi
 					listIngredients.add(newIngredients);
 				}
 			}
-			recipe.setIngredients(listIngredients);
 
+			recipe.setIngredients(listIngredients);
+			
+			recipe.setCalories(calculateCalories(recipe.getId()));
+			
 			recipeRepository.save(recipe);
 			logger.info("Saving recipe to the database");
 
@@ -303,5 +308,21 @@ public class RecipeServiceImpl implements RecipeService {
 					HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<RecipeDTO>(new RecipeDTO(recipe.get()), HttpStatus.OK);
+	}
+
+	public Float calculateCalories(Integer id) {
+		Optional<Recipe> recipe = recipeRepository.findById(id);
+
+		if (!recipe.isPresent() || !recipe.get().getIsActive()) {
+			return null;
+		}
+		
+		Float recipeCalories = 0.0f;
+		
+		for (Ingredients ingredients : recipe.get().getIngredients()) {
+	        Float ingredientCalories = (ingredients.getCalories() / 100) * ingredients.getAmount();
+	        recipeCalories += ingredientCalories;
+		}
+		return recipeCalories;
 	}
 }
