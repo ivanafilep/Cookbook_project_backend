@@ -35,6 +35,10 @@ public class Ingredients {
 	@Column
 	@NotNull(message = "Unit must be included.")
 	public String unit;
+	
+	@Column
+	@NotNull(message = "Amount must be included.")
+	public Integer amount;
 
 	@Column
 	@NotNull(message = "Calories must be included.")
@@ -74,12 +78,14 @@ public class Ingredients {
 
 	public Ingredients(Integer id, @NotNull(message = "Name must be included.") String name,
 			@NotNull(message = "Unit must be included.") String unit,
+			@NotNull(message = "Amount must be included.") Integer amount,
 			@NotNull(message = "Calories must be included.") Float calories, Float carbs, Float fats, Float sugars,
 			Float proteins, Float saturatedFats, Boolean isActive, Allergens allergen, List<Recipe> recipes) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.unit = unit;
+		this.amount = amount;
 		this.calories = calories;
 		this.carbs = carbs;
 		this.fats = fats;
@@ -185,6 +191,14 @@ public class Ingredients {
 
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	public Integer getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Integer amount) {
+		this.amount = amount;
 	}
 
 }

@@ -31,6 +31,10 @@ public class Recipe {
 	@Column
 	@NotNull(message = "Name must be included.")
 	public String name;
+	
+	@Column
+	@NotNull(message = "Calories must be included.")
+	public Float calories;
 
 	@Column
 	@NotNull(message = "Steps must be included.")
@@ -72,6 +76,7 @@ public class Recipe {
 	}
 	
 	public Recipe(Integer id, @NotNull(message = "Name must be included.") String name,
+			@NotNull(message = "Calories must be included.") Float calories,
 			@NotNull(message = "Steps must be included.") String steps,
 			@NotNull(message = "Time must be included.") Integer time,
 			@NotNull(message = "Amount must be included.") Integer amount, String picture, Boolean isActive, Chef chef,
@@ -79,6 +84,7 @@ public class Recipe {
 		super();
 		this.id = id;
 		this.name = name;
+		this.calories = calories;
 		this.steps = steps;
 		this.time = time;
 		this.amount = amount;
@@ -167,5 +173,13 @@ public class Recipe {
 
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	public Float getCalories() {
+		return calories;
+	}
+
+	public void setCalories(Float calories) {
+		this.calories = calories;
 	}
 }

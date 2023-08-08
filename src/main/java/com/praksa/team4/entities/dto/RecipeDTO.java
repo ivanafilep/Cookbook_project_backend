@@ -27,7 +27,7 @@ public class RecipeDTO {
 
 	private Chef chefId;
 
-	public List<Ingredients> ingredients;
+	public List<Ingredients> ingredients = new ArrayList<>();
 
 	public RecipeDTO() {
 		super();
