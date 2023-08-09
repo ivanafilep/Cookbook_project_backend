@@ -20,7 +20,6 @@ import com.praksa.team4.services.ChefServiceImpl;
 import com.praksa.team4.util.UserCustomValidator;
 
 @RestController
-@Secured("ROLE_ADMIN")
 @RequestMapping(path = "project/chef")
 @CrossOrigin(origins = "http://localhost:3000")
 public class ChefController {
@@ -42,7 +41,7 @@ public class ChefController {
 
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> addNewChef(@Valid @RequestBody UserDTO chef, BindingResult result) {
+	public ResponseEntity<?> createChef(@Valid @RequestBody UserDTO chef, BindingResult result) {
 		return chefService.createChef(chef, result);
 
 	}
