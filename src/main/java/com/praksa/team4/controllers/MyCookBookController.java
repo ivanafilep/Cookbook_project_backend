@@ -30,7 +30,7 @@ public class MyCookBookController {
 		return myCookBookService.getAll();
 	}
 
-	@Secured({ "ROLE_ADMIN", "ROLE_REGULAR_USER" })
+	@Secured({ "ROLE_REGULAR_USER" })
 	@RequestMapping(method = RequestMethod.GET, path = "/{id}")
 	public ResponseEntity<?> getCookBookById(@PathVariable Integer id, Authentication authentication) {
 		return myCookBookService.getCookBookById(id, authentication);
