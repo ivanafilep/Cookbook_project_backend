@@ -50,6 +50,7 @@ public class WebSecurityConfig {
 				.antMatchers(HttpMethod.GET, "/project/recipe/by_name").permitAll()
 				.antMatchers(HttpMethod.GET, "/project/recipe/{id}").permitAll()
 				.antMatchers(HttpMethod.GET, "/project/ingredients").permitAll()
+				.antMatchers(HttpMethod.GET, "/project/ingredients/recipe/{id}").permitAll()
 				.antMatchers(HttpMethod.GET, "/project/allergens").permitAll()
 				.antMatchers(HttpMethod.GET, "/project/ingredients/id/{id}").permitAll()
 				.antMatchers(HttpMethod.POST, "/project/regularuser").permitAll()

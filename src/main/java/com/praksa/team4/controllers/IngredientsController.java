@@ -33,6 +33,11 @@ public class IngredientsController {
 		return ingredientsService.getAll();
 	}
 
+	@RequestMapping(method = RequestMethod.GET, path = "/recipe/{id}")
+	public ResponseEntity<?> getIngredientsByRecipe(@PathVariable Integer id) {
+		return ingredientsService.getIngredientsByRecipe(id);
+	}
+	
 	@RequestMapping(method = RequestMethod.GET, path = "/id/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id) {
 		return ingredientsService.getById(id);
