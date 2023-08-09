@@ -33,7 +33,6 @@ public class IngredientsController {
 		return ingredientsService.getAll();
 	}
 
-	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.GET, path = "/id/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id) {
 		return ingredientsService.getById(id);
