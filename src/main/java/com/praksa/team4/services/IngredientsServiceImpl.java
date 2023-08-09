@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.praksa.team4.entities.Allergens;
 import com.praksa.team4.entities.Ingredients;
+import com.praksa.team4.entities.Recipe;
 import com.praksa.team4.entities.dto.IngredientsDTO;
 import com.praksa.team4.repositories.AllergensRepository;
 import com.praksa.team4.repositories.IngredientsRepository;
+import com.praksa.team4.repositories.RecipeRepository;
 import com.praksa.team4.util.ErrorMessageHelper;
 import com.praksa.team4.util.RESTError;
 import com.praksa.team4.util.UserCustomValidator;
@@ -30,6 +32,9 @@ public class IngredientsServiceImpl implements IngredientsService {
 
 	@Autowired
 	private AllergensRepository allergensRepository;
+
+	@Autowired
+	private RecipeRepository recipeRepository;
 
 	@Autowired
 	UserCustomValidator userValidator;
@@ -216,5 +221,36 @@ public class IngredientsServiceImpl implements IngredientsService {
 		return new ResponseEntity<>("Ingredient '" + ingredient.get().name + "' has been deleted successfully.",
 				HttpStatus.OK);
 	}
+
+	public ResponseEntity<?> getIngredientsByRecipe(Integer id) {
+		try {
+			Optional<Recipe> recipe = recipeRepository.findById(id);
+			
+			if (recipe.isEmpty() || !recipe.get().getIsActive()) {
+				return new ResponseEntity<RESTError>(new RESTError(1, "No recipe found with ID " + id), HttpStatus.NOT_FOUND);
+			}
+			
+			List<Ingredients> ingredients = (List<Ingredients>) ingredientsRepository.findAllByRecipes(recipe.get());
+
+			if (ingredients.isEmpty()) {
+				logger.error("No ingredients found in the database.");
+				return new ResponseEntity<RESTError>(new RESTError(2, "No ingredients found in that recipe"), HttpStatus.NOT_FOUND);
+			} else {
+				ArrayList<IngredientsDTO> activeIngredients = new ArrayList<>();
+				for (Ingredients ingredientDB : ingredients) {
+					if (ingredientDB.getIsActive()) {
+						activeIngredients.add(new IngredientsDTO(ingredientDB));
+					}
+				}
+
+				logger.info("Found ingredients in the database");
+				return new ResponseEntity<ArrayList<IngredientsDTO>>(activeIngredients, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<RESTError>(new RESTError(3, "Exception occurred: " + e.getMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 
 }
