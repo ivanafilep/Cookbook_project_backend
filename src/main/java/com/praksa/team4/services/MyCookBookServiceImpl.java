@@ -74,15 +74,7 @@ public class MyCookBookServiceImpl implements MyCookBookService {
 			return new ResponseEntity<RESTError>(new RESTError(1, "CookBook is not found!"), HttpStatus.NOT_FOUND);
 		}
 
-		if (currentUser.getRole().equals("ROLE_ADMIN")) {
-			ArrayList<RecipeDTO> cookbookRecipes = new ArrayList<>();
-			for (Recipe recipe : myCookBook.get().getRecipes()) {
-				if (recipe.getIsActive()) {
-					cookbookRecipes.add(new RecipeDTO(recipe));
-				}
-			}
-			return new ResponseEntity<ArrayList<RecipeDTO>>(cookbookRecipes, HttpStatus.OK);
-		} else if (currentUser.getRole().equals("ROLE_REGULAR_USER")) {
+		if (currentUser.getRole().equals("ROLE_REGULAR_USER")) {
 			logger.info("Regular user" + currentUser.getName() + " " + currentUser.getLastname()
 					+ " is looking at his own cookbook.");
 			RegularUser regularUser = (RegularUser) currentUser;
