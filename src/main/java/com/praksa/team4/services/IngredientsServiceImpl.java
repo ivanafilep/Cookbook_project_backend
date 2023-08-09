@@ -126,7 +126,16 @@ public class IngredientsServiceImpl implements IngredientsService {
 		// TODO resiti kako da dodajemo sastojcima alergene, kad cemo imati bazu sa
 		// sastojcima bez alergena (da ne bude rucno)
 
-		ingredient.setAllergen(newIngredient.getAllergen());
+		
+		Optional<Allergens> allergen = allergensRepository.findById(newIngredient.getAllergen().getId());
+		
+		if (allergen.isEmpty() || !allergen.get().getIsActive()) {
+			logger.error("There isn't an allergen in the database.");
+			return new ResponseEntity<RESTError>(new RESTError(1, "No allergen found"),
+					HttpStatus.NOT_FOUND);
+		}
+
+		ingredient.setAllergen(allergen.get());
 
 		ingredientsRepository.save(ingredient);
 		logger.info("Saving ingredient to the database");
@@ -146,14 +155,22 @@ public class IngredientsServiceImpl implements IngredientsService {
 
 		ingredient.get().setName(updatedIngredient.getName());
 		ingredient.get().setUnit(updatedIngredient.getUnit());
-		//ingredient.get().setAmount(updatedIngredient.getAmount());
 		ingredient.get().setCalories(updatedIngredient.getCalories());
 		ingredient.get().setCarbs(updatedIngredient.getCarbs());
 		ingredient.get().setFats(updatedIngredient.getFats());
 		ingredient.get().setSugars(updatedIngredient.getSugars());
 		ingredient.get().setProteins(updatedIngredient.getProteins());
 		ingredient.get().setSaturatedFats(updatedIngredient.getSaturatedFats());
-		ingredient.get().setAllergen(updatedIngredient.getAllergen());
+		Optional<Allergens> allergen = allergensRepository.findById(updatedIngredient.getAllergen().getId());
+		
+		if (allergen.isEmpty() || !allergen.get().getIsActive()) {
+			logger.error("There isn't an allergen in the database.");
+			return new ResponseEntity<RESTError>(new RESTError(1, "No allergen found"),
+					HttpStatus.NOT_FOUND);
+		}
+
+		
+		ingredient.get().setAllergen(allergen.get());
 		logger.info("Updating ingredient parameters.");
 
 		ingredientsRepository.save(ingredient.get());
