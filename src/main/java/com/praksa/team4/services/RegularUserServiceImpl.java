@@ -327,7 +327,7 @@ public class RegularUserServiceImpl implements RegularUserService {
 
 		Optional<RegularUser> regularUser = regularUserRepository.findById(id);
 
-		if (regularUser.isEmpty() || !regularUser.get().getIsActive()) {
+		if (!regularUser.isPresent() || !regularUser.get().getIsActive()) {
 			logger.error("There is no regular user found with id " + id + " in the database.");
 			return new ResponseEntity<RESTError>(new RESTError(1, "No regular user found with ID " + id),
 					HttpStatus.NOT_FOUND);

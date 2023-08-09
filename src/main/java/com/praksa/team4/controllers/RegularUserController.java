@@ -80,11 +80,13 @@ public class RegularUserController {
 		return regularUserService.deleteRegularUser(id, authentication);
 	}
 
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.GET, path = "/{id}")
 	public ResponseEntity<?> getRegularUserById(@PathVariable Integer id) {
 		return regularUserService.getRegularUserById(id);
 	}
 
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.GET, path = "/by_name")
 	public ResponseEntity<?> getRegularUserByName(@RequestParam String name) {
 		return regularUserService.getRegularUserByName(name);

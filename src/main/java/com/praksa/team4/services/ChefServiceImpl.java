@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.praksa.team4.entities.Chef;
+import com.praksa.team4.entities.RegularUser;
 import com.praksa.team4.entities.UserEntity;
 import com.praksa.team4.entities.dto.ChefDTO;
+import com.praksa.team4.entities.dto.RegularUserDTO;
 import com.praksa.team4.entities.dto.UserDTO;
 import com.praksa.team4.repositories.ChefRepository;
 import com.praksa.team4.repositories.UserRepository;
@@ -34,9 +36,9 @@ public class ChefServiceImpl implements ChefService {
 
 	@Autowired
 	UserCustomValidator userValidator;
-	
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
@@ -175,6 +177,19 @@ public class ChefServiceImpl implements ChefService {
 		chef.get().setIsActive(false);
 		chefRepository.save(chef.get());
 		return new ResponseEntity<>("Chef successfully deleted", HttpStatus.OK);
+	}
+
+	public ResponseEntity<?> getChefById(@PathVariable Integer id) {
+
+		Optional<Chef> chef = chefRepository.findById(id);
+
+		if (!chef.isPresent() || !chef.get().getIsActive()) {
+			logger.error("There is no chef found with id " + id + " in the database.");
+			return new ResponseEntity<RESTError>(new RESTError(1, "No chef found with ID " + id), HttpStatus.NOT_FOUND);
+		} else {
+			logger.info("Chef found in the database: " + chef.get().getName() + chef.get().getLastname() + ".");
+			return new ResponseEntity<ChefDTO>(new ChefDTO(chef.get()), HttpStatus.OK);
+		}
 	}
 
 }
