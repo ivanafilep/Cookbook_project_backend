@@ -54,6 +54,11 @@ public class ChefController {
 		return chefService.updateChef(updatedChef, result, id, authentication);
 
 	}
+	@Secured("ROLE_ADMIN")
+	@RequestMapping(method = RequestMethod.GET, path = "/{id}")
+	public ResponseEntity<?> getChefById(@PathVariable Integer id) {
+		return chefService.getChefById(id);
+	}
 
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
