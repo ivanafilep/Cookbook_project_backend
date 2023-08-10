@@ -31,16 +31,16 @@ public class EmailServiceImpl implements EmailService {
 		emailSender.send(message);
 	}
 
-public void messageToAdmin(Chef chef, Recipe recipe, UserEntity admin) {
+public void messageToAdmin(Chef chef, Recipe recipe) {
 		
 	EmailDTO email = new EmailDTO();
 
-    email.setTo(admin.getEmail());
+    //email.setTo("pera@gmail.com"); ovo kad bi slali peri adminu
+    
     email.setTo("teodora.romic.brains22@gmail.com");
     logger.info("Setting up admin's email address");
 
     email.setSubject("New Recipe Added - " + recipe.getName());
-    logger.info("Setting up recipe name in the email subject");
 
     String text = "One of your chefs, " + chef.getName() + " " + chef.getLastname() +
             ", has added a new recipe to your site:\n" +
