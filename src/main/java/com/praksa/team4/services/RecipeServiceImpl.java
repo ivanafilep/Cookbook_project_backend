@@ -79,32 +79,31 @@ public class RecipeServiceImpl implements RecipeService {
 		}
 	}
 
-	public ResponseEntity<?> getAllRecipesByChef(@PathVariable Integer id) {
-		Optional<Chef> chef = chefRepository.findById(id);
-
-		if (chef.isEmpty() || !chef.get().getIsActive()) {
-			logger.info("No chef found in the database");
-			return new ResponseEntity<RESTError>(new RESTError(1, "No chef found in the database"), HttpStatus.OK);
-		}
-
-		List<Recipe> recipes = (List<Recipe>) recipeRepository.findByChef(chef.get());
-
-		if (recipes.isEmpty()) {
-			logger.error("No recipes found in the database.");
-			return new ResponseEntity<RESTError>(new RESTError(2, "No recipes found in the database"),
-					HttpStatus.NOT_FOUND);
-		} else {
-			ArrayList<RecipeDTO> activeRecipes = new ArrayList<>();
-			for (Recipe recipeDB : recipes) {
-				if (recipeDB.getIsActive()) {
-					activeRecipes.add(new RecipeDTO(recipeDB));
+	public ResponseEntity<?> getAllRecipesByChef(Authentication authentication) {
+		
+		String email = (String) authentication.getName();
+		UserEntity currentUser = userRepository.findByEmail(email);
+		
+		if (currentUser.getRole().equals("ROLE_CHEF")) {
+			Chef chef = (Chef) currentUser;
+	
+			List<Recipe> recipes = (List<Recipe>) recipeRepository.findByChef(chef);
+	
+			if (recipes.isEmpty()) {
+				logger.error("No recipes found in the database.");
+				return new ResponseEntity<RESTError>(new RESTError(2, "No recipes found in the database"), HttpStatus.NOT_FOUND);
+			} else {
+				ArrayList<RecipeDTO> activeRecipes = new ArrayList<>();
+				for (Recipe recipeDB : recipes) {
+					if (recipeDB.getIsActive()) {
+						activeRecipes.add(new RecipeDTO(recipeDB));
+					}
 				}
+				logger.info("Found recipes in the database");
+				return new ResponseEntity<ArrayList<RecipeDTO>>(activeRecipes, HttpStatus.OK);
 			}
-			logger.info("Found recipes in the database");
-
-			return new ResponseEntity<ArrayList<RecipeDTO>>(activeRecipes, HttpStatus.OK);
-
 		}
+		return new ResponseEntity<RESTError>(new RESTError(2, "User is not authorized to create recipes."), HttpStatus.UNAUTHORIZED);
 	}
 
 	public ResponseEntity<?> createRecipe(RecipeIdAmountDTO newRecipe, BindingResult result, Authentication authentication) {

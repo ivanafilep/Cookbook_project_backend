@@ -31,9 +31,9 @@ public class MyCookBookController {
 	}
 
 	@Secured({ "ROLE_REGULAR_USER" })
-	@RequestMapping(method = RequestMethod.GET, path = "/{id}")
-	public ResponseEntity<?> getCookBookById(@PathVariable Integer id, Authentication authentication) {
-		return myCookBookService.getCookBookById(id, authentication);
+	@RequestMapping(method = RequestMethod.GET, path = "/user")
+	public ResponseEntity<?> getCookBookByUser(Authentication authentication) {
+		return myCookBookService.getCookBookByUser(authentication);
 	}
 
 	@Secured("ROLE_REGULAR_USER")

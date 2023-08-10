@@ -46,7 +46,6 @@ public class WebSecurityConfig {
 				.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/cookbook/login").permitAll()
 				.antMatchers(HttpMethod.GET, "/project/recipe").permitAll()
-				.antMatchers(HttpMethod.GET, "/project/recipe/chefRecipes/{id}").permitAll()
 				.antMatchers(HttpMethod.GET, "/project/recipe/by_name").permitAll()
 				.antMatchers(HttpMethod.GET, "/project/recipe/{id}").permitAll()
 				.antMatchers(HttpMethod.GET, "/project/ingredients").permitAll()

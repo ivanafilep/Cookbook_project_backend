@@ -37,8 +37,8 @@ public class RecipeController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, path = "/chefRecipes/{id}")
-	public ResponseEntity<?> getAllRecipesByChef(@PathVariable Integer id) {
-		return recipeService.getAllRecipesByChef(id);
+	public ResponseEntity<?> getAllRecipesByChef(Authentication authentication) {
+		return recipeService.getAllRecipesByChef(authentication);
 	}
 
 	@Secured({ "ROLE_CHEF" })

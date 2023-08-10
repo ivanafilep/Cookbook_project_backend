@@ -63,33 +63,32 @@ public class MyCookBookServiceImpl implements MyCookBookService {
 		}
 	}
 
-	public ResponseEntity<?> getCookBookById(@PathVariable Integer id, Authentication authentication) {
+	public ResponseEntity<?> getCookBookByUser(Authentication authentication) {
 
 		String email = (String) authentication.getName();
 		UserEntity currentUser = userRepository.findByEmail(email);
 
-		Optional<MyCookBook> myCookBook = cookBookRepository.findById(id);
-
-		if (!myCookBook.isPresent() || !myCookBook.get().getIsActive()) {
-			return new ResponseEntity<RESTError>(new RESTError(1, "CookBook is not found!"), HttpStatus.NOT_FOUND);
-		}
-
 		if (currentUser.getRole().equals("ROLE_REGULAR_USER")) {
 			logger.info("Regular user" + currentUser.getName() + " " + currentUser.getLastname()
 					+ " is looking at his own cookbook.");
+
 			RegularUser regularUser = (RegularUser) currentUser;
 
-			if (regularUser.getMyCookBook().getId().equals(myCookBook.get().getId())) {
-				logger.info("Regular user is updating his own cookbook.");
-				ArrayList<RecipeDTO> cookbookRecipes = new ArrayList<>();
-				for (Recipe recipe : myCookBook.get().getRecipes()) {
-					if (recipe.getIsActive()) {
-						cookbookRecipes.add(new RecipeDTO(recipe));
-					}
-				}
-				return new ResponseEntity<ArrayList<RecipeDTO>>(cookbookRecipes, HttpStatus.OK);
+			Optional<MyCookBook> myCookBook = cookBookRepository.findByRegularUser(regularUser);
+
+			if (!myCookBook.isPresent() || !myCookBook.get().getIsActive()) {
+				return new ResponseEntity<RESTError>(new RESTError(1, "CookBook is not found!"), HttpStatus.NOT_FOUND);
 			}
+			logger.info("Regular user is updating his own cookbook.");
+			ArrayList<RecipeDTO> cookbookRecipes = new ArrayList<>();
+			for (Recipe recipe : myCookBook.get().getRecipes()) {
+				if (recipe.getIsActive()) {
+					cookbookRecipes.add(new RecipeDTO(recipe));
+				}
+			}
+			return new ResponseEntity<ArrayList<RecipeDTO>>(cookbookRecipes, HttpStatus.OK);
 		}
+		
 		return new ResponseEntity<RESTError>(new RESTError(2, "Not authorized to update cookbook"),
 				HttpStatus.UNAUTHORIZED);
 	}
