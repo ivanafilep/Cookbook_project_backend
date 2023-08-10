@@ -46,7 +46,7 @@ public void messageToAdmin(Chef chef, Recipe recipe) {
             ", has added a new recipe to your site:\n" +
             "Recipe Name: " + recipe.getName() + "\n" +
             "Ingredients: " + recipe.getIngredients() + "\n" +
-            "Instructions: " + recipe.getSteps();
+            "Steps: " + recipe.getSteps();
     logger.info("Setting up the email message with information about the new recipe");
 
     email.setText(text);
