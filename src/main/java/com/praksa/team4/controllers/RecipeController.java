@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.praksa.team4.entities.dto.RecipeDTO;
+import com.praksa.team4.entities.dto.RecipeIdAmountDTO;
 import com.praksa.team4.services.RecipeServiceImpl;
 
 @RestController
@@ -40,7 +41,7 @@ public class RecipeController {
 
 	@Secured({ "ROLE_CHEF" })
 	@RequestMapping(method = RequestMethod.POST, value = "/newRecipe")
-	public ResponseEntity<?> createRecipe(@Valid @RequestBody RecipeDTO newRecipe, BindingResult result,
+	public ResponseEntity<?> createRecipe(@Valid @RequestBody RecipeIdAmountDTO newRecipe, BindingResult result,
 			Authentication authentication) {
 		return recipeService.createRecipe(newRecipe, result, authentication);
 	}

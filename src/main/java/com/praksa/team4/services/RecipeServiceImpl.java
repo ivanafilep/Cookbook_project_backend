@@ -3,6 +3,7 @@ package com.praksa.team4.services;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import com.praksa.team4.entities.Recipe;
 import com.praksa.team4.entities.RegularUser;
 import com.praksa.team4.entities.UserEntity;
 import com.praksa.team4.entities.dto.RecipeDTO;
+import com.praksa.team4.entities.dto.RecipeIdAmountDTO;
 import com.praksa.team4.repositories.ChefRepository;
 import com.praksa.team4.repositories.IngredientsRepository;
 import com.praksa.team4.repositories.RecipeRepository;
@@ -100,7 +102,7 @@ public class RecipeServiceImpl implements RecipeService {
 		}
 	}
 
-	public ResponseEntity<?> createRecipe(RecipeDTO newRecipe, BindingResult result, Authentication authentication) {
+	public ResponseEntity<?> createRecipe(RecipeIdAmountDTO newRecipe, BindingResult result, Authentication authentication) {
 
 		if (result.hasErrors()) {
 			logger.error("Sent incorrect parameters.");
@@ -125,11 +127,15 @@ public class RecipeServiceImpl implements RecipeService {
 			recipe.setChef(chef);
 			
 			List<Ingredients> listIngredients = new ArrayList<>();
-			for (Ingredients ingredients : newRecipe.getIngredients()) {
-				if (ingredients.getIsActive() != null && ingredients.getIsActive()) {
-					Ingredients newIngredients = ingredientsRepository.findById(ingredients.getId()).get();
-					ingredients.setAmount(ingredients.getAmount()); // TODO kako se unosi
-					listIngredients.add(newIngredients);
+			
+			for (Map.Entry<Integer, Integer> ingredientIdAmounts : newRecipe.getIngredientIdAmounts().entrySet()) {
+				Integer id = ingredientIdAmounts.getKey();
+				Integer amount = ingredientIdAmounts.getValue();
+				Optional<Ingredients> newIngredients = ingredientsRepository.findById(id);
+
+				if (newIngredients.isPresent() && newIngredients.get().getIsActive()) {
+					newIngredients.get().setAmount(amount);
+					listIngredients.add(newIngredients.get());
 				}
 			}
 
@@ -146,7 +152,7 @@ public class RecipeServiceImpl implements RecipeService {
 				HttpStatus.UNAUTHORIZED);
 	}
 
-	public ResponseEntity<?> updateRecipe(RecipeDTO updatedRecipe, BindingResult result, Integer id,
+	public ResponseEntity<?> updateRecipe(RecipeIdAmountDTO updatedRecipe, BindingResult result, Integer id,
 			Authentication authentication) {
 
 		if (result.hasErrors()) {
@@ -174,14 +180,23 @@ public class RecipeServiceImpl implements RecipeService {
 			recipe.get().setSteps(updatedRecipe.getSteps());
 			recipe.get().setAmount(updatedRecipe.getAmount());
 			recipe.get().setPicture(updatedRecipe.getPicture());
+			
 			List<Ingredients> listIngredients = new ArrayList<>();
-			for (Ingredients ingredients : updatedRecipe.getIngredients()) {
-				if (ingredients.getIsActive()) {
-					Ingredients newIngredients = ingredientsRepository.findById(ingredients.getId()).get();
-					listIngredients.add(newIngredients);
+			
+			for (Map.Entry<Integer, Integer> ingredientIdAmounts : updatedRecipe.getIngredientIdAmounts().entrySet()) {
+				Integer ingredientId = ingredientIdAmounts.getKey();
+				Integer amount = ingredientIdAmounts.getValue();
+				Optional<Ingredients> newIngredients = ingredientsRepository.findById(ingredientId);
+
+				if (newIngredients.isPresent() && newIngredients.get().getIsActive()) {
+					newIngredients.get().setAmount(amount);
+					listIngredients.add(newIngredients.get());
 				}
 			}
+
 			recipe.get().setIngredients(listIngredients);
+			
+			recipe.get().setCalories(calculateCalories(recipe.get()));
 
 			recipeRepository.save(recipe.get());
 			logger.info("Saving recipe to the database");
@@ -195,14 +210,23 @@ public class RecipeServiceImpl implements RecipeService {
 				recipe.get().setSteps(updatedRecipe.getSteps());
 				recipe.get().setAmount(updatedRecipe.getAmount());
 				recipe.get().setPicture(updatedRecipe.getPicture());
+				
 				List<Ingredients> listIngredients = new ArrayList<>();
-				for (Ingredients ingredients : updatedRecipe.getIngredients()) {
-					if (ingredients.getIsActive()) {
-						Ingredients newIngredients = ingredientsRepository.findById(ingredients.getId()).get();
-						listIngredients.add(newIngredients);
+				
+				for (Map.Entry<Integer, Integer> ingredientIdAmounts : updatedRecipe.getIngredientIdAmounts().entrySet()) {
+					Integer ingredientId = ingredientIdAmounts.getKey();
+					Integer amount = ingredientIdAmounts.getValue();
+					Optional<Ingredients> newIngredients = ingredientsRepository.findById(ingredientId);
+
+					if (newIngredients.isPresent() && newIngredients.get().getIsActive()) {
+						newIngredients.get().setAmount(amount);
+						listIngredients.add(newIngredients.get());
 					}
 				}
+
 				recipe.get().setIngredients(listIngredients);
+				
+				recipe.get().setCalories(calculateCalories(recipe.get()));
 
 				recipeRepository.save(recipe.get());
 				logger.info("Saving recipe to the database");
