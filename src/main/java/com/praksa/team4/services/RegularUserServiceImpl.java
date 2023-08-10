@@ -197,8 +197,8 @@ public class RegularUserServiceImpl implements RegularUserService {
 		Optional<Allergens> allergen = allergensRepository.findById(allergen_id);
 
 		if (allergen.isEmpty() || !allergen.get().getIsActive()) {
-			logger.error("There is no chef found with id " + allergen_id + " in the database.");
-			return new ResponseEntity<RESTError>(new RESTError(2, "No chef found with ID " + allergen_id),
+			logger.error("There is no allergen found with id " + allergen_id + " in the database.");
+			return new ResponseEntity<RESTError>(new RESTError(2, "No allergen found with ID " + allergen_id),
 					HttpStatus.NOT_FOUND);
 		}
 
