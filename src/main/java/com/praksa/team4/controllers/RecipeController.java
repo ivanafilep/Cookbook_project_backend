@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.praksa.team4.entities.UserEntity;
 import com.praksa.team4.entities.dto.RecipeDTO;
 import com.praksa.team4.entities.dto.RecipeIdAmountDTO;
 import com.praksa.team4.services.RecipeServiceImpl;
@@ -43,7 +45,7 @@ public class RecipeController {
 	@RequestMapping(method = RequestMethod.POST, value = "/newRecipe")
 	public ResponseEntity<?> createRecipe(@Valid @RequestBody RecipeIdAmountDTO newRecipe, BindingResult result,
 			Authentication authentication) {
-		return recipeService.createRecipe(newRecipe, result, authentication);
+		return recipeService.createRecipe(newRecipe, result, admin, authentication);
 	}
 
 	@Secured({ "ROLE_ADMIN", "ROLE_CHEF" })
@@ -55,9 +57,9 @@ public class RecipeController {
 
 	@Secured({ "ROLE_ADMIN", "ROLE_CHEF" })
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
-	public ResponseEntity<?> deleteRecipe(@PathVariable Integer id, BindingResult result,
+	public ResponseEntity<?> deleteRecipe(@PathVariable Integer id,
 			Authentication authentication) {
-		return recipeService.deleteRecipe(id, result, authentication);
+		return recipeService.deleteRecipe(id, authentication);
 
 	}
 
