@@ -8,6 +8,5 @@ import com.praksa.team4.entities.RegularUser;
 
 public interface MyCookBookRepository  extends CrudRepository<MyCookBook, Integer>{
 
-	Optional<MyCookBook> findByRegularUser(RegularUser regularUser);
 
 }

@@ -73,20 +73,22 @@ public class MyCookBookServiceImpl implements MyCookBookService {
 					+ " is looking at his own cookbook.");
 
 			RegularUser regularUser = (RegularUser) currentUser;
-
-			Optional<MyCookBook> myCookBook = cookBookRepository.findByRegularUser(regularUser);
-
-			if (!myCookBook.isPresent() || !myCookBook.get().getIsActive()) {
-				return new ResponseEntity<RESTError>(new RESTError(1, "CookBook is not found!"), HttpStatus.NOT_FOUND);
-			}
+			MyCookBook myCookBook = regularUser.getMyCookBook();
+			
 			logger.info("Regular user is updating his own cookbook.");
 			ArrayList<RecipeDTO> cookbookRecipes = new ArrayList<>();
-			for (Recipe recipe : myCookBook.get().getRecipes()) {
-				if (recipe.getIsActive()) {
-					cookbookRecipes.add(new RecipeDTO(recipe));
+			if(!myCookBook.getRecipes().isEmpty()) {
+				for (Recipe recipe : myCookBook.getRecipes()) {
+					if (recipe.getIsActive()) {
+						cookbookRecipes.add(new RecipeDTO(recipe));
+					}
 				}
+				return new ResponseEntity<ArrayList<RecipeDTO>>(cookbookRecipes, HttpStatus.OK);
+
+			} else {
+				return new ResponseEntity<ArrayList<RecipeDTO>>(cookbookRecipes, HttpStatus.OK);
 			}
-			return new ResponseEntity<ArrayList<RecipeDTO>>(cookbookRecipes, HttpStatus.OK);
+			
 		}
 		
 		return new ResponseEntity<RESTError>(new RESTError(2, "Not authorized to update cookbook"),
