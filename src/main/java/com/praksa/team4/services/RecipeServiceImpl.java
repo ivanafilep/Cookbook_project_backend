@@ -126,7 +126,6 @@ public class RecipeServiceImpl implements RecipeService {
 			recipe.setName(newRecipe.getName());
 			recipe.setTime(newRecipe.getTime());
 			recipe.setSteps(newRecipe.getSteps());
-			recipe.setAmount(newRecipe.getAmount());
 			recipe.setPicture(newRecipe.getPicture());
 			recipe.setIsActive(true);
 			recipe.setChef(chef);
@@ -136,22 +135,24 @@ public class RecipeServiceImpl implements RecipeService {
 			for (Map.Entry<Integer, Integer> ingredientIdAmounts : newRecipe.getIngredientIdAmounts().entrySet()) {
 				Integer id = ingredientIdAmounts.getKey();
 				Integer amount = ingredientIdAmounts.getValue();
-				Optional<Ingredients> newIngredients = ingredientsRepository.findById(id);
-
-				if (newIngredients.isPresent() && newIngredients.get().getIsActive()) {
-					newIngredients.get().setAmount(amount);
-					listIngredients.add(newIngredients.get());
+				Optional<Ingredients> newIngredient = ingredientsRepository.findById(id);
+				if (newIngredient.isPresent() && newIngredient.get().getIsActive()) {
+					newIngredient.get().setAmount(amount);
+					listIngredients.add(newIngredient.get());
+					logger.info("Adding ingredient to the database");
 				}
 			}
 
 			recipe.setIngredients(listIngredients);
 			
 			recipe.setCalories(calculateCalories(recipe));
+
+			recipe.setAmount(calculateRecipeAmount(recipe));
 			
 			recipeRepository.save(recipe);
 			logger.info("Saving recipe to the database");
 			
-			emailServiceImpl.messageToAdmin(chef, recipe, admin);
+			emailServiceImpl.messageToAdmin(chef, recipe);
 			
 			return new ResponseEntity<RecipeDTO>(new RecipeDTO(recipe), HttpStatus.CREATED);
 		}
@@ -185,7 +186,6 @@ public class RecipeServiceImpl implements RecipeService {
 			recipe.get().setName(updatedRecipe.getName());
 			recipe.get().setTime(updatedRecipe.getTime());
 			recipe.get().setSteps(updatedRecipe.getSteps());
-			recipe.get().setAmount(updatedRecipe.getAmount());
 			recipe.get().setPicture(updatedRecipe.getPicture());
 			
 			List<Ingredients> listIngredients = new ArrayList<>();
@@ -204,6 +204,8 @@ public class RecipeServiceImpl implements RecipeService {
 			recipe.get().setIngredients(listIngredients);
 			
 			recipe.get().setCalories(calculateCalories(recipe.get()));
+
+			recipe.get().setAmount(calculateRecipeAmount(recipe.get()));
 
 			recipeRepository.save(recipe.get());
 			logger.info("Saving recipe to the database");
@@ -343,7 +345,6 @@ public class RecipeServiceImpl implements RecipeService {
 
 	public Float calculateCalories(Recipe recipe) {
 		
-		
 		Float recipeCalories = 0.0f;
 		
 		for (Ingredients ingredients : recipe.getIngredients()) {
@@ -351,5 +352,15 @@ public class RecipeServiceImpl implements RecipeService {
 	        recipeCalories += ingredientCalories;
 		}
 		return recipeCalories;
+	}
+	
+	public Integer calculateRecipeAmount(Recipe recipe) {
+		
+		Integer recipeAmount = 0;
+		
+		for (Ingredients ingredients : recipe.getIngredients()) {
+			recipeAmount += ingredients.getAmount();
+		}
+		return recipeAmount;
 	}
 }

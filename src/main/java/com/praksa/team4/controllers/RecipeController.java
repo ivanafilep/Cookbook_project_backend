@@ -45,12 +45,12 @@ public class RecipeController {
 	@RequestMapping(method = RequestMethod.POST, value = "/newRecipe")
 	public ResponseEntity<?> createRecipe(@Valid @RequestBody RecipeIdAmountDTO newRecipe, BindingResult result,
 			Authentication authentication) {
-		return recipeService.createRecipe(newRecipe, result, admin, authentication);
+		return recipeService.createRecipe(newRecipe, result, authentication);
 	}
 
 	@Secured({ "ROLE_ADMIN", "ROLE_CHEF" })
 	@RequestMapping(method = RequestMethod.PUT, value = "/updateRecipe/{id}")
-	public ResponseEntity<?> updateRecipe(@Valid @RequestBody RecipeDTO updatedRecipe, BindingResult result,
+	public ResponseEntity<?> updateRecipe(@Valid @RequestBody RecipeIdAmountDTO updatedRecipe, BindingResult result,
 			@PathVariable Integer id, Authentication authentication) {
 		return recipeService.updateRecipe(updatedRecipe, result, id, authentication);
 	}

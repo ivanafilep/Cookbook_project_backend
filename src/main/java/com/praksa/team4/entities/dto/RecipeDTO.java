@@ -21,6 +21,8 @@ public class RecipeDTO {
 
 	@NotNull(message = "Time must be included.")
 	public Integer time;
+	
+	public Float calories;
 
 	@NotNull(message = "Amount must be included.")
 	public Integer amount;
@@ -49,7 +51,8 @@ public class RecipeDTO {
 		for (Ingredients i : r.getIngredients()) {
 			this.ingredients.add(i);
 		}
-	}
+		this.calories = r.getCalories();
+		}
 
 	public String getName() {
 		return name;
@@ -107,14 +110,20 @@ public class RecipeDTO {
 		this.ingredients = ingredients;
 	}
 
-
 	public Integer getId() {
 		return id;
 	}
 
-
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public Float getCalories() {
+		return calories;
+	}
+
+	public void setCalories(Float calories) {
+		this.calories = calories;
 	}
 
 }
