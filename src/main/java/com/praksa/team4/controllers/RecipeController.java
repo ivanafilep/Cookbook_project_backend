@@ -36,6 +36,7 @@ public class RecipeController {
 		return recipeService.getAllRecipes();
 	}
 
+	@Secured({ "ROLE_CHEF" })
 	@RequestMapping(method = RequestMethod.GET, path = "/chefRecipes")
 	public ResponseEntity<?> getAllRecipesByChef(Authentication authentication) {
 		return recipeService.getAllRecipesByChef(authentication);
