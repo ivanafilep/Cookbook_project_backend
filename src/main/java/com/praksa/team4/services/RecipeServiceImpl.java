@@ -14,11 +14,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.praksa.team4.entities.Chef;
 import com.praksa.team4.entities.Ingredients;
 import com.praksa.team4.entities.Recipe;
 import com.praksa.team4.entities.RegularUser;
 import com.praksa.team4.entities.UserEntity;
+import com.praksa.team4.entities.dto.EmailDTO;
 import com.praksa.team4.entities.dto.RecipeDTO;
 import com.praksa.team4.repositories.ChefRepository;
 import com.praksa.team4.repositories.IngredientsRepository;
@@ -45,6 +47,9 @@ public class RecipeServiceImpl implements RecipeService {
 
 	@Autowired
 	UserCustomValidator userValidator;
+	
+	@Autowired
+	private EmailServiceImpl emailServiceImpl;
 
 	protected final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
@@ -100,7 +105,7 @@ public class RecipeServiceImpl implements RecipeService {
 		}
 	}
 
-	public ResponseEntity<?> createRecipe(RecipeDTO newRecipe, BindingResult result, Authentication authentication) {
+	public ResponseEntity<?> createRecipe(RecipeDTO newRecipe, BindingResult result, UserEntity admin, Authentication authentication) {
 
 		if (result.hasErrors()) {
 			logger.error("Sent incorrect parameters.");
@@ -139,7 +144,9 @@ public class RecipeServiceImpl implements RecipeService {
 			
 			recipeRepository.save(recipe);
 			logger.info("Saving recipe to the database");
-
+			
+			emailServiceImpl.messageToAdmin(chef, recipe, admin);
+			
 			return new ResponseEntity<RecipeDTO>(new RecipeDTO(recipe), HttpStatus.CREATED);
 		}
 		return new ResponseEntity<RESTError>(new RESTError(2, "User is not authorized to create recipes."),
@@ -214,7 +221,7 @@ public class RecipeServiceImpl implements RecipeService {
 				HttpStatus.UNAUTHORIZED);
 	}
 
-	public ResponseEntity<?> deleteRecipe(Integer id, BindingResult result, Authentication authentication) {
+	public ResponseEntity<?> deleteRecipe(Integer id, Authentication authentication) {
 
 		Optional<Recipe> recipe = recipeRepository.findById(id);
 
