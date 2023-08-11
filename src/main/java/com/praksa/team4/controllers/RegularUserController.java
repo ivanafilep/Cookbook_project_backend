@@ -80,10 +80,10 @@ public class RegularUserController {
 		return regularUserService.deleteRegularUser(id, authentication);
 	}
 
-	@Secured("ROLE_ADMIN")
+	@Secured({ "ROLE_ADMIN", "ROLE_REGULAR_USER" })
 	@RequestMapping(method = RequestMethod.GET, path = "/{id}")
-	public ResponseEntity<?> getRegularUserById(@PathVariable Integer id) {
-		return regularUserService.getRegularUserById(id);
+	public ResponseEntity<?> getRegularUserById(@PathVariable Integer id, Authentication authentication) {
+		return regularUserService.getRegularUserById(id, authentication);
 	}
 
 	@Secured("ROLE_ADMIN")

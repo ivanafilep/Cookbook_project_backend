@@ -54,7 +54,7 @@ public class UserController {
 		UserEntity user = userRepository.findByEmail(email);
 		if (user != null && Encryption.validatePassword(password, user.getPassword())) {
 			String token = getJWTToken(user);
-			UserTokenDTO userLogin = new UserTokenDTO(email, token, user.getRole());
+			UserTokenDTO userLogin = new UserTokenDTO(user.getId(), email, token, user.getRole());
 			
 			return new ResponseEntity<>(userLogin, HttpStatus.OK);
 		}
