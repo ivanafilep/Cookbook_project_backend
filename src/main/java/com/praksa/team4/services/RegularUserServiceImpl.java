@@ -315,19 +315,31 @@ public class RegularUserServiceImpl implements RegularUserService {
 				HttpStatus.UNAUTHORIZED);
 	}
 
-	public ResponseEntity<?> getRegularUserById(@PathVariable Integer id) {
+	public ResponseEntity<?> getRegularUserById(@PathVariable Integer id, Authentication authentication) {
 
+		String email = (String) authentication.getName();
+		UserEntity currentUser = userRepository.findByEmail(email);
+		
 		Optional<RegularUser> regularUser = regularUserRepository.findById(id);
-
+		
 		if (!regularUser.isPresent() || !regularUser.get().getIsActive()) {
 			logger.error("There is no regular user found with id " + id + " in the database.");
 			return new ResponseEntity<RESTError>(new RESTError(1, "No regular user found with ID " + id),
 					HttpStatus.NOT_FOUND);
-		} else {
-			logger.info("Regular user found in the database: " + regularUser.get().getName()
-					+ regularUser.get().getLastname() + ".");
-			return new ResponseEntity<RegularUserDTO>(new RegularUserDTO(regularUser.get()), HttpStatus.OK);
 		}
+		
+		if (currentUser.getRole().equals("ROLE_ADMIN")) {
+			logger.info("Admin " + currentUser.getName() + " " + currentUser.getLastname() + " is deleting users profile.");
+			return new ResponseEntity<RegularUserDTO>(new RegularUserDTO(regularUser.get()), HttpStatus.OK);
+
+		} else if (currentUser.getRole().equals("ROLE_REGULAR_USER")) {
+			RegularUser user = (RegularUser) currentUser;
+			if (user.getId().equals(regularUser.get().getId())) {
+				return new ResponseEntity<RegularUserDTO>(new RegularUserDTO(regularUser.get()), HttpStatus.OK);
+			}
+		}
+		return new ResponseEntity<RESTError>(new RESTError(3, "Not authorized to update regular user"),
+				HttpStatus.UNAUTHORIZED);
 	}
 
 	public ResponseEntity<?> getRegularUserByName(@RequestParam String name) {

@@ -2,6 +2,8 @@ package com.praksa.team4.entities.dto;
 
 public class UserTokenDTO {
 	
+	private Integer id;
+	
 	private String email;
 	
 	private String token;
@@ -10,8 +12,9 @@ public class UserTokenDTO {
 	
 	public UserTokenDTO() {}
 	
-	public UserTokenDTO(String email, String token, String role) {
+	public UserTokenDTO(Integer id, String email, String token, String role) {
 		super();
+		this.id = id;
 		this.email = email;
 		this.token = token;
 		this.role = role;
@@ -39,5 +42,13 @@ public class UserTokenDTO {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 }
