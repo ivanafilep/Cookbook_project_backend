@@ -156,7 +156,7 @@ public class RegularUserServiceImpl implements RegularUserService {
 			changeUser.get().setLastname(updatedRegularUser.getLastname());
 			changeUser.get().setUsername(updatedRegularUser.getUsername());
 			changeUser.get().setEmail(updatedRegularUser.getEmail());
-			changeUser.get().setPassword(updatedRegularUser.getPassword());
+			//changeUser.get().setPassword(updatedRegularUser.getPassword());
 			regularUserRepository.save(changeUser.get());
 
 			return new ResponseEntity<RegularUserDTO>(new RegularUserDTO(changeUser.get()), HttpStatus.OK);

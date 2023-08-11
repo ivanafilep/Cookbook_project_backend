@@ -133,7 +133,7 @@ public class ChefServiceImpl implements ChefService {
 			logger.info("Admin " + currentChef.getName() + " " + currentChef.getLastname() + " is updating chef.");
 
 			changeChef.get().setUsername(updatedChef.getUsername());
-			changeChef.get().setPassword(updatedChef.getPassword());
+			//changeChef.get().setPassword(updatedChef.getPassword());
 			changeChef.get().setName(updatedChef.getName());
 			changeChef.get().setLastname(updatedChef.getLastname());
 			changeChef.get().setEmail(updatedChef.getEmail());
