@@ -35,7 +35,7 @@ public class AllergensController {
 		return allergensService.getAll();
 	}
 	
-	@Secured("ROLE_REGULAR_USER")
+	@Secured({"ROLE_REGULAR_USER", "ROLE_ADMIN"})
 	@RequestMapping(method = RequestMethod.GET, path = "/userAllergens")
 	public ResponseEntity<?> getAllergensByUser(Authentication authentication) {
 		return allergensService.getAllergensByUser(authentication);
