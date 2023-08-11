@@ -58,7 +58,7 @@ public class RegularUserController {
 
 	}
 
-	@Secured({ "ROLE_ADMIN", "ROLE_REGULAR_USER" })
+	@Secured({"ROLE_REGULAR_USER" })
 	@RequestMapping(method = RequestMethod.PUT, path = "regularuser_id/{regularuser_id}/allergen_id/{allergen_id}")
 	public ResponseEntity<?> addAllergenToRegularUser(@PathVariable Integer regularuser_id,
 			@PathVariable Integer allergen_id, Authentication authentication) {

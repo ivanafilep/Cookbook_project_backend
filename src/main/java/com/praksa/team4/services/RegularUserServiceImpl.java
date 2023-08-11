@@ -205,16 +205,8 @@ public class RegularUserServiceImpl implements RegularUserService {
 		String email = (String) authentication.getName();
 		UserEntity currentUser = userRepository.findByEmail(email);
 
-		if (currentUser.getRole().equals("ROLE_ADMIN")) {
-			logger.info("Admin " + currentUser.getName() + " " + currentUser.getLastname()
-					+ " is adding allergen to regular user.");
-			if (!regularUser.get().getAllergens().contains(allergen.get())) {
-				regularUser.get().getAllergens().add(allergen.get());
-			}
-			regularUserRepository.save(regularUser.get());
-
-			return new ResponseEntity<RegularUserDTO>(new RegularUserDTO(regularUser.get()), HttpStatus.CREATED);
-		} else if (currentUser.getRole().equals("ROLE_REGULAR_USER")) {
+		
+		  if (currentUser.getRole().equals("ROLE_REGULAR_USER")) {
 			logger.info("Regular user" + currentUser.getName() + " " + currentUser.getLastname()
 					+ " is adding allergen to his own profile.");
 			RegularUser loggedInUser = (RegularUser) currentUser;
